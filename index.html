@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOBREAKER | Rupture de Stock sur le Chômage</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+    <nav id="navbar">
+        <div class="container nav-inner">
+            <div class="logo" onclick="app.showView('landing')">
+                <img src="logo.png" alt="JOBREAKER">
+            </div>
+            <div class="nav-links">
+                <button onclick="app.showView('dashboard')">Dashboard</button>
+                <button class="btn-primary" onclick="app.showView('onboarding')">S'inscrire</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- VIEW: LANDING -->
+    <main id="view-landing" class="view active">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="drip-bg">
+                <svg class="drip-svg animate-drip" viewBox="0 0 1440 400" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M0 0H1440V280C1440 280 1320 380 1200 380C1080 380 960 220 840 220C720 220 600 340 480 340C360 340 240 180 120 180C60 180 0 240 0 240V0Z"
+                        fill="#F472B6" fill-opacity="0.1" />
+                    <path
+                        d="M0 0H1440V180C1440 180 1350 240 1250 240C1150 240 1050 140 950 140C850 140 750 220 650 220C550 220 450 120 350 120C250 120 150 180 50 180C25 180 0 160 0 160V0Z"
+                        fill="#EC4899" />
+                </svg>
+            </div>
+
+            <div class="container hero-content">
+                <h1>
+                    L'IA change les règles. <br>
+                    <span class="text-pink">JobBreaker</span> vous aide à <br>
+                    rester dans le jeu.
+                </h1>
+                <p class="text-gray subtitle">
+                    L'intermédiaire intelligent entre les mutations du marché, l'IA et votre expertise humaine. <br>
+                    Évoluez avec l'IA, ne la subissez pas.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn-hero" onclick="app.showView('onboarding')">
+                        Lancer l'automatisation
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works">
+            <div class="container">
+                <div class="section-header">
+                    <h2>L'art de la rupture.</h2>
+                    <div class="separator"></div>
+                </div>
+
+                <div class="steps-grid">
+                    <div class="card step-card">
+                        <div class="step-num">01</div>
+                        <h3>Détection des Mutations</h3>
+                        <p class="text-gray">Analyse continue des métiers émergents et des compétences en évolution pour
+                            ne jamais être obsolète.</p>
+                    </div>
+                    <div class="card step-card highlight">
+                        <div class="step-num">02</div>
+                        <h3>Profil Augmenté</h3>
+                        <p class="text-gray">Optimisez votre empreinte (Humain + IA) pour vous repositionner sur les
+                            opportunités de demain.</p>
+                    </div>
+                    <div class="card step-card">
+                        <div class="step-num">03</div>
+                        <h3>Signaux & Opportunités</h3>
+                        <p class="text-gray">Recevez chaque matin les meilleures offres et une compétence clé à
+                            surveiller ou renforcer.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- VIEW: ONBOARDING -->
+    <main id="view-onboarding" class="view">
+        <div class="wizard-container">
+            <div class="wizard-header">
+                <div class="logo"><img src="logo.png" alt="JOBREAKER"></div>
+                <button class="btn-close" onclick="app.showView('landing')">Quitter</button>
+            </div>
+
+            <div class="wizard-content container">
+                <div class="wizard-progress">
+                    <div class="progress-dot active" id="dot-1"></div>
+                    <div class="progress-dot" id="dot-2"></div>
+                    <div class="progress-dot" id="dot-3"></div>
+                </div>
+
+                <div class="card wizard-card">
+                    <div class="drip-corner">
+                        <svg viewBox="0 0 100 100">
+                            <path d="M100 0 L100 100 Q 80 80 0 100 L 0 0 Z" fill="#EC4899" fill-opacity="0.1" />
+                        </svg>
+                    </div>
+
+                    <div id="step-1" class="wizard-step active">
+                        <h2>Qui es-tu ?</h2>
+                        <p class="text-gray">Commençons par les bases de ton identité.</p>
+                        <div class="form-group">
+                            <label>PRÉNOM & NOM</label>
+                            <input type="text" id="input-name" placeholder="Alex Rivera">
+                        </div>
+                        <div class="form-group">
+                            <label>EMAIL</label>
+                            <input type="email" id="input-email" placeholder="alex@jobreaker.io">
+                        </div>
+                        <button class="btn-next" onclick="app.nextStep()">Continuer</button>
+                    </div>
+
+                    <div id="step-2" class="wizard-step">
+                        <h2>Ton Expertise.</h2>
+                        <p class="text-gray">Ce que tu fais de mieux.</p>
+                        <div class="form-group">
+                            <label>INTITULÉ DE POSTE VISÉ</label>
+                            <input type="text" id="input-job" placeholder="Product Designer Senior">
+                        </div>
+                        <div class="form-group">
+                            <label>LOCALISATION</label>
+                            <select id="input-location" class="form-select">
+                                <option value="" disabled selected>Choisir une localisation</option>
+                                <option value="Remote">Remote (Télétravail)</option>
+                                <!-- JS will populate countries -->
+                            </select>
+                        </div>
+                        <button class="btn-next" onclick="app.nextStep()">Valider mon profil</button>
+                    </div>
+
+                    <div id="step-3" class="wizard-step success">
+                        <div class="success-icon">✓</div>
+                        <h2>C'est lancé !</h2>
+                        <p class="text-gray">Ton profil est sous surveillance. Rendez-vous demain matin à 07:00.</p>
+                        <button class="btn-next" onclick="app.showView('dashboard')">Accéder au Dashboard</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- VIEW: DASHBOARD -->
+    <main id="view-dashboard" class="view">
+        <div class="dashboard-layout">
+            <aside class="sidebar">
+                <div class="logo">JOBREAKER<span>.</span></div>
+                <nav class="side-nav">
+                    <a href="#" class="active">Feed Matinal</a>
+                    <a href="#">Mon Profil</a>
+                    <a href="#">Paramètres</a>
+                </nav>
+                <div class="sidebar-footer">
+                    <button onclick="app.logout()">Déconnexion</button>
+                </div>
+            </aside>
+
+            <div class="dash-main">
+                <header class="dash-header">
+                    <div class="welcome">
+                        <h2>Hello, Alex Rivera.</h2>
+                        <p class="text-gray">Votre assistant Jobreaker tourne en silence.</p>
+                    </div>
+                    <div class="status-badge">
+                        <span class="pulse"></span>
+                        ANALYSE EN COURS
+                    </div>
+                </header>
+
+                <div class="dash-grid">
+                    <div class="stats-cards">
+                        <div class="card bg-black stat-card">
+                            <label>SIGNAL DU MARCHÉ</label>
+                            <div class="value-title">L'IA Générative</div>
+                            <div class="sub-value text-pink">+12% de demande ce mois</div>
+                        </div>
+                        <div class="card bg-pink stat-card">
+                            <label>SKILL À RENFORCER</label>
+                            <div class="value-title">Prompt Engine</div>
+                            <div class="sub-value">Impact: Transformationnel</div>
+                        </div>
+                    </div>
+
+                    <div class="card profile-summary">
+                        <div class="avatar">AR</div>
+                        <h3>Alex Rivera</h3>
+                        <p class="text-gray">Profil : Humain Augmenté</p>
+                        <div class="skills">
+                            <span>Design</span>
+                            <span>IA Strategy</span>
+                            <span>Soft Skills</span>
+                        </div>
+                    </div>
+
+                    <div class="feed-section">
+                        <div class="feed-header">
+                            <h3>Dernières pépites.</h3>
+                            <button class="text-pink">Voir tout le feed</button>
+                        </div>
+                        <div class="feed-list">
+                            <div class="card feed-item">
+                                <div class="item-info">
+                                    <div class="item-icon">L</div>
+                                    <div>
+                                        <h4>Lead UI/UX Designer</h4>
+                                        <p class="text-gray">Lydia • Paris • 65k - 75k€</p>
+                                    </div>
+                                </div>
+                                <div class="item-meta">
+                                    <span class="match-tag">94% Match</span>
+                                    <span class="time">04:12</span>
+                                </div>
+                            </div>
+                            <div class="card feed-item">
+                                <div class="item-info">
+                                    <div class="item-icon gray">A</div>
+                                    <div>
+                                        <h4>Product Designer</h4>
+                                        <p class="text-gray">Alan • Remote • 70k - 85k€</p>
+                                    </div>
+                                </div>
+                                <div class="item-meta">
+                                    <span class="match-tag gray">88% Match</span>
+                                    <span class="time">03:55</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
