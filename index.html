@@ -42,7 +42,7 @@
             <div class="container hero-content">
                 <h1>
                     L'IA change les règles. <br>
-                    <span class="text-pink">JobBreaker</span> vous aide à <br>
+                    <span class="text-pink">Jobreaker</span> vous aide à <br>
                     rester dans le jeu.
                 </h1>
                 <p class="text-gray subtitle">
@@ -165,9 +165,9 @@
             <aside class="sidebar">
                 <div class="logo">JOBREAKER<span>.</span></div>
                 <nav class="side-nav">
-                    <a href="#" class="active">Feed Matinal</a>
-                    <a href="#">Mon Profil</a>
-                    <a href="#">Paramètres</a>
+                    <a href="#" onclick="app.showView('dashboard')" class="active">Feed Matinal</a>
+                    <a href="#" onclick="app.showView('profile')">Mon Profil</a>
+                    <a href="#" onclick="app.showView('settings')">Paramètres</a>
                 </nav>
                 <div class="sidebar-footer">
                     <button onclick="app.logout()">Déconnexion</button>
@@ -244,6 +244,94 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- VIEW: PROFILE -->
+    <main id="view-profile" class="view">
+        <div class="dashboard-layout">
+            <aside class="sidebar">
+                <div class="logo"><img src="logo.png" alt="JOBREAKER"></div>
+                <nav class="side-nav">
+                    <a href="#" onclick="app.showView('dashboard')">Feed Matinal</a>
+                    <a href="#" onclick="app.showView('profile')" class="active">Mon Profil</a>
+                    <a href="#" onclick="app.showView('settings')">Paramètres</a>
+                </nav>
+                <div class="sidebar-footer">
+                    <button onclick="app.logout()">Déconnexion</button>
+                </div>
+            </aside>
+
+            <div class="dash-main">
+                <header class="dash-header">
+                    <div class="welcome">
+                        <h2>Mon Profil.</h2>
+                        <p class="text-gray">Gérez vos informations et votre positionnement.</p>
+                    </div>
+                </header>
+
+                <div class="card wizard-card" style="max-width: 800px;">
+                    <div class="form-group">
+                        <label>PRÉNOM & NOM</label>
+                        <input type="text" id="profile-name">
+                    </div>
+                    <div class="form-group">
+                        <label>EMAIL (Non modifiable)</label>
+                        <input type="email" id="profile-email" disabled style="opacity: 0.5; cursor: not-allowed;">
+                    </div>
+                    <div class="form-group">
+                        <label>INTITULÉ DE POSTE VISÉ</label>
+                        <input type="text" id="profile-job">
+                    </div>
+                    <div class="form-group">
+                        <label>LOCALISATION</label>
+                        <select id="profile-location" class="form-select">
+                            <option value="" disabled selected>Choisir une localisation</option>
+                            <option value="Remote">Remote (Télétravail)</option>
+                            <!-- JS will populate countries -->
+                        </select>
+                    </div>
+                    <button class="btn-next" onclick="app.updateProfile()"
+                        style="width: auto; padding: 1rem 3rem;">Sauvegarder les modifications</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- VIEW: SETTINGS -->
+    <main id="view-settings" class="view">
+        <div class="dashboard-layout">
+            <aside class="sidebar">
+                <div class="logo"><img src="logo.png" alt="JOBREAKER"></div>
+                <nav class="side-nav">
+                    <a href="#" onclick="app.showView('dashboard')">Feed Matinal</a>
+                    <a href="#" onclick="app.showView('profile')">Mon Profil</a>
+                    <a href="#" onclick="app.showView('settings')" class="active">Paramètres</a>
+                </nav>
+                <div class="sidebar-footer">
+                    <button onclick="app.logout()">Déconnexion</button>
+                </div>
+            </aside>
+
+            <div class="dash-main">
+                <header class="dash-header">
+                    <div class="welcome">
+                        <h2>Paramètres.</h2>
+                        <p class="text-gray">Gérez votre compte et vos préférences.</p>
+                    </div>
+                </header>
+
+                <div class="settings-content" style="max-width: 800px;">
+                    <div class="card wizard-card" style="border: 1px solid #EF4444;">
+                        <h3 style="color: #EF4444; margin-bottom: 1rem;">Zone Dangereuse</h3>
+                        <p class="text-gray" style="margin-bottom: 2rem;">
+                            La suppression de votre compte est définitive. Toutes vos données (profil, préférences,
+                            historique) seront effacées de nos serveurs.
+                        </p>
+                        <button class="btn-danger" onclick="app.deleteAccount()">Supprimer mon compte</button>
                     </div>
                 </div>
             </div>
