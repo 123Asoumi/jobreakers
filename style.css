@@ -157,7 +157,8 @@ h5 {
 }
 
 .btn-primary {
-    background: var(--black);
+    background: #000000 !important;
+    /* Force Black */
     color: var(--white);
     padding: 0.8rem 1.5rem;
     border-radius: 99px;
@@ -837,50 +838,254 @@ h5 {
     text-transform: uppercase;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
+/* RESPONSIVE DESIGN */
+@media screen and (max-width: 1024px) {
+    .container {
+        padding: 0 1.5rem;
+    }
+
+    .hero h1 {
+        font-size: 3.5rem;
+    }
+
     .sidebar {
-        width: 80px;
-        padding: 2rem 1rem;
-    }
-
-    .sidebar .logo,
-    .side-nav span,
-    .sidebar-footer span {
-        display: none;
-    }
-
-    .side-nav a {
-        padding: 1rem;
-        text-align: center;
+        width: 240px;
     }
 
     .dash-main {
-        margin-left: 80px;
+        margin-left: 240px;
+        padding: 2rem;
     }
 
-    .stats-cards,
+    .dash-grid {
+        grid-template-columns: repeat(8, 1fr);
+    }
+
+    .stats-cards {
+        grid-column: span 8;
+    }
+
     .profile-summary {
-        grid-column: span 12;
+        grid-column: span 8;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+        padding: 2rem;
+        justify-content: space-between;
+    }
+
+    .profile-summary .avatar {
+        margin-bottom: 0;
+        margin-right: 1.5rem;
+    }
+
+    .profile-summary .skills {
+        margin-top: 0;
+        justify-content: flex-end;
+    }
+
+    .feed-section {
+        grid-column: span 8;
     }
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
+
+    /* Global layout */
+    .dashboard-layout {
+        flex-direction: column;
+    }
+
+    .hero h1 {
+        font-size: 2.8rem;
+    }
+
+    /* Fix text overlap on mobile */
+    .hero {
+        padding-top: 160px;
+        padding-bottom: 4rem;
+    }
+
+    .subtitle {
+        font-size: 1.1rem;
+    }
+
+    /* Transform Sidebar to Bottom Nav */
+    /* Transform Sidebar to Bottom Nav */
+    .sidebar {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        top: auto !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 80px;
+        padding: 0.5rem 0 !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+        background: #0B0B0B !important;
+        /* Force Black Background */
+        border-top: 2px solid var(--pink-base);
+        /* Visible Border */
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5) !important;
+        z-index: 2147483647 !important;
+        /* Max Z-Index */
+        display: flex !important;
+    }
+
+    .sidebar .logo {
+        display: none !important;
+    }
+
+    .sidebar-footer {
+        display: none !important;
+    }
+
+    .side-nav {
+        margin-top: 0 !important;
+        display: flex !important;
+        width: 100% !important;
+        justify-content: space-around !important;
+        gap: 0 !important;
+    }
+
+    .side-nav a {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 0.7rem !important;
+        padding: 0.5rem !important;
+        margin-bottom: 0 !important;
+        border-radius: 8px !important;
+        text-align: center !important;
+        color: #888 !important;
+        /* Visible Gray */
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .side-nav a.active {
+        color: #EC4899 !important;
+        /* Pink Active */
+        background: rgba(236, 72, 153, 0.1) !important;
+    }
+
+    /* Add icons via CSS content if not in HTML (Fallback) */
+    .side-nav a:nth-child(1)::before {
+        content: '🏠';
+        font-size: 1.2rem;
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    .side-nav a:nth-child(2)::before {
+        content: '👤';
+        font-size: 1.2rem;
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    .side-nav a:nth-child(3)::before {
+        content: '⚙️';
+        font-size: 1.2rem;
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    .side-nav a:nth-child(4)::before {
+        content: '📚';
+        font-size: 1.2rem;
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    /* Dashboard Main Content */
+    .dash-main {
+        margin-left: 0;
+        padding: 1rem 1rem 6rem 1rem;
+        /* Bottom padding for nav */
+        width: 100%;
+    }
+
     .dash-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 2rem;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .welcome h2 {
+        font-size: 1.8rem;
+    }
+
+    /* Grid Stacking */
+    .dash-grid {
+        display: flex;
+        /* Simple stacking */
+        flex-direction: column;
+        gap: 1.5rem;
     }
 
     .stats-cards {
         grid-template-columns: 1fr;
+        /* Stack cards */
     }
 
+    .stat-card .value-title {
+        font-size: 2rem;
+    }
+
+    .profile-summary {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-summary .avatar {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+
+    .profile-summary .skills {
+        justify-content: center;
+        margin-top: 1rem;
+    }
+
+    /* Feed */
+    .feed-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .item-info {
+        width: 100%;
+    }
+
+    .item-meta {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Wizard / Onboarding */
     .wizard-card {
-        padding: 2rem;
+        padding: 2rem 1.5rem;
     }
 
-    .form-group input {
-        font-size: 1.1rem;
+    .wizard-header {
+        padding: 1rem;
+    }
+
+    .wizard-step h2 {
+        font-size: 2rem;
+    }
+
+    /* Login View */
+    #view-login .wizard-card {
+        padding: 2rem 1.5rem;
     }
 }

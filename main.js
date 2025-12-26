@@ -181,20 +181,38 @@ const app = {
     },
 
     showView(viewId) {
+        // Prevent flickering if already on the same view (unless forced)
+        if (this.currentView === viewId) {
+            const target = document.getElementById('view-' + viewId);
+            if (target && target.classList.contains('active')) {
+                // Ensure sidebar is visible e.g. on mobile resize
+                const nav = document.getElementById('navbar');
+                if (viewId === 'dashboard' || viewId === 'profile' || viewId === 'settings' || viewId === 'job-details') {
+                    if (nav) nav.style.display = 'none';
+                }
+                return;
+            }
+        }
+
         document.querySelectorAll('.view').forEach(view => {
             view.classList.remove('active');
+            // Remove the delay for hiding, just hide it after transition or immediately
+            // But we keep the timeout to allow fade out
             setTimeout(() => {
-                view.style.display = 'none';
+                if (this.currentView !== view.id.replace('view-', '')) {
+                    view.style.display = 'none';
+                }
             }, 600);
         });
 
         const target = document.getElementById('view-' + viewId);
-        setTimeout(() => {
+        if (target) {
             target.style.display = 'block';
+            // slight delay to allow display:block to apply before adding class for opacity transition
             setTimeout(() => {
                 target.classList.add('active');
             }, 50);
-        }, 600);
+        }
 
         this.currentView = viewId;
         window.scrollTo(0, 0);

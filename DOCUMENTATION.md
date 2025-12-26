@@ -1,98 +1,69 @@
-# 🚀 Jobreaker - Documentation Technique
+# 🚀 Jobreaker - Guide Utilisateur
 
-**Jobreaker** est une application web moderne d'automatisation de recherche d'emploi ("autopilot"). Elle agrège des offres, personnalise le flux pour l'utilisateur, et fournit des insights de marché en temps réel.
+Jobreaker est votre assistant personnel pour automatiser votre recherche d'emploi. L'application agrège les offres d'emploi, les filtre selon votre profil et vous tient informé des tendances du marché en temps réel.
 
----
+## 🎯 Démarrage Rapide
 
-## 🏗️ Architecture
+### 1. Inscription
+Lors de votre première visite, vous allez configurer votre profil en 3 étapes simples :
+*   **Renseignez votre adresse email**
+*   **Indiquez le métier que vous recherchez** (ex: Product Designer, Développeur Full-Stack)
+*   **Précisez votre localisation préférée**
 
-Le projet repose sur une architecture **Serverless** légère et performante :
+### 2. Connexion
+Pour vous connecter lors de vos prochaines visites, il vous suffit de saisir votre adresse email.
 
-*   **Frontend HTML/JS** : Une Single Page Application (SPA) native sans framework lourd, pour une performance maximale.
-*   **Backend & Base de données** : Supabase (PostgreSQL) gère les utilisateurs, les offres d'emploi, et le stockage de fichiers.
-*   **Data Ingestion** : Scripts Node.js (`scripts/ingest_jobs.js`) qui consomment l'API Remotive pour alimenter la base.
-*   **Realtime** : Les clients écoutent les changements en temps réel via Supabase Realtime (WebSockets).
+## � Utilisation du Feed d'Offres
 
----
+### Votre Feed Personnalisé
+Une fois connecté, vous accédez à votre feed personnalisé d'offres d'emploi. Les offres sont automatiquement filtrées selon :
+*   **Votre métier cible**
+*   **Votre localisation préférée**
+*   **Un score de pertinence** calculé pour chaque offre
 
-## 🗄️ Modèle de Données (Supabase)
+### Navigation dans les Offres
+Pour chaque offre, vous pouvez :
+*   **Consulter les détails** : Cliquez sur "Détails" pour accéder à la description complète.
+*   **Postuler** : Cliquez sur "Postuler" pour être redirigé vers l'offre originale.
+*   **Voir les compétences requises** : Identifiées par des badges colorés.
 
-### 1. Table `users`
-Stocke les profils candidats.
-- `id` (UUID): Identifiant unique.
-- `email` (Text): Unique, clé de connexion.
-- `target_job` (Text): Métier visé (ex: "Product Designer") - *Clé pour le matching*.
-- `location` (Text): Localisation souhaitée.
-- `avatar_url` (Text): URL publique de la photo de profil.
-- `created_at` (Timestamp).
+### Mises à Jour en Temps Réel
+Les nouvelles offres correspondant à votre profil apparaissent automatiquement en haut de votre feed, sans besoin de rafraîchir la page.
 
-### 2. Table `job_listings`
-Stocke les offres agrégées.
-- `title`, `company`, `location`, `salary_range` (Text).
-- `tags` (Array): Compétences requises.
-- `match_score` (Int): Score de pertinence (simulé pour la démo).
-- `url` (Text): Lien vers l'offre originale.
-- `description` (Text): Description complète HTML de l'offre.
+## 📊 Dashboard et Insights
+Votre dashboard vous fournit des informations stratégiques adaptées à votre métier :
 
-### 3. Storage `avatars`
-Bucket public pour stocker les photos de profil utilisateurs via le dossier `avatars/`.
+### Signal du Marché
+Découvrez les tendances actuelles dans votre domaine (ex: "IA Générative" pour les développeurs, "Design System" pour les designers).
 
----
+### Skill Gap
+Identifiez les compétences les plus recherchées que vous pourriez développer pour améliorer vos chances.
 
-## ⚡ Fonctionnalités Clés
+## 👤 Gestion de Profil
 
-### 1. Onboarding & Auth
-- **Wizard** en 3 étapes pour capter le profil (Métier, Localisation).
-- **Login** simple par email (lookup dans la table `users`).
-- Persistance de session via `localStorage`.
+### Photo de Profil
+Vous pouvez ajouter ou modifier votre photo de profil à tout moment :
+*   Cliquez sur votre avatar dans l'en-tête (en vue Profil).
+*   Sélectionnez une nouvelle image depuis votre appareil.
+*   Prévisualisez avant validation.
+*   Votre photo est automatiquement sauvegardée.
 
-### 2. Feed Intelligent & Matching
-- **Algorithme** : `main.js` filtre les offres (`fetchMatchedJobs`) en fonction du `target_job` et `location` de l'utilisateur.
-- **Fallback Logic** : Si aucune offre exacte n'est trouvée, le système affiche automatiquement les offres les plus populaires pour éviter un écran vide ("Zero State" géré).
-- **Realtime** : L'application écoute les `INSERT` sur `job_listings`. Une nouvelle offre pertinente apparaît instantanément "en haut de pile" avec une animation.
+## 💡 Conseils d'Utilisation
+*   **Soyez précis** : Plus votre métier cible est précis, meilleures seront les correspondances.
+*   **Consultez régulièrement** : De nouvelles offres sont ajoutées quotidiennement.
+*   **Explorez les détails** : La description complète peut contenir des informations importantes non visibles dans le résumé.
+*   **Utilisez les insights** : Les tendances et compétences suggérées sont basées sur les données réelles du marché.
 
-### 3. Insights Dynamiques (Dashboard)
-Le dashboard s'adapte au métier de l'utilisateur :
-- **Signal du Marché** : Affiche une tendance tech/design pertinente (ex: "IA Générative" pour les devs).
-- **Skill Gap** : Suggère une compétence à apprendre.
-- **Logique** : Gérée par `updateInsights()` dans `main.js`, mappant des mots-clés de job à des dictionnaires de tendances.
+## ❓ Questions Fréquentes
 
-### 4. Vue Détails & Upload
-- **Détails** : Affichage immersif de la description complète de l'offre avant redirection.
-- **Upload** : Gestion d'upload d'avatar avec prévisualisation immédiate et sauvegarde Supabase Storage.
+### Comment modifier mon métier cible ?
+Actuellement, pour modifier votre métier cible, vous devez créer un nouveau profil avec une nouvelle adresse email. Une fonctionnalité d'édition de profil est prévue dans les prochaines versions.
 
----
+### Je ne vois aucune offre, pourquoi ?
+Si aucune offre exacte ne correspond à votre profil, l'application affiche automatiquement les offres les plus populaires pour vous donner un aperçu du marché. Essayez d'élargir vos critères de recherche.
 
-## 🛠️ Installation & Setup
+### Les offres sont-elles mises à jour automatiquement ?
+Oui ! Les nouvelles offres apparaissent automatiquement dans votre feed dès qu'elles sont ajoutées à la base de données. Pas besoin de rafraîchir la page.
 
-### Pré-requis
-- Node.js installé.
-- Compte Supabase (URL + Anon Key).
-
-### 1. Configuration Base de Données
-Exécutez le script SQL dans `schema.sql` via l'interface Supabase pour créer les tables et les politiques de sécurité (RLS).
-*Note : Assurez-vous d'ajouter la politique `UPDATE` pour la table users.*
-
-### 2. Variables d'Environnement
-Dans `main.js` et `scripts/ingest_jobs.js`, configurez :
-```javascript
-const SUPABASE_URL = 'VOTRE_URL';
-const SUPABASE_KEY = 'VOTRE_ANON_KEY';
-```
-
-### 3. Lancer l'Ingestion (Populate Data)
-Pour récupérer de vraies offres :
-```bash
-node scripts/ingest_jobs.js
-```
-*Ce script récupère 50 offres récentes via l'API Remotive et les injecte dans Supabase.*
-
-### 4. Lancer l'app
-Ouvrez simplement `index.html` dans votre navigateur (ou via Live Server).
-
----
-
-## 🔮 Roadmap / Améliorations Futures
-- **AI Matching** : Remplacer le filtre `ilike` SQL par un vector search (pgvector) pour un matching sémantique.
-- **Auth Sécurisée** : Implémenter Supabase Auth (Magic Links) au lieu du simple email lookup.
-- **Scraping Avancé** : Ajouter d'autres sources d'offres (LinkedIn, WTTJ) via n8n.
+### Comment sont calculés les scores de pertinence ?
+Les scores de pertinence sont calculés en fonction de la correspondance entre votre profil (métier, localisation) et les caractéristiques de l'offre. Plus le score est élevé, plus l'offre correspond à vos critères.
