@@ -2,432 +2,442 @@
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JOBREAKER | Rupture de Stock sur le Chômage</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@200;300;400;500;600&family=JetBrains+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link id="all-fonts-link-font-geist" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap">
+
+    <!-- Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                        geist: ['"Geist"', 'sans-serif'],
+                    },
+                    colors: {
+                        canvas: '#FAFAFA',
+                        surface: '#FFFFFF',
+                        obsidian: '#FF4F84',
+                        charcoal: '#333333',
+                        subtle: '#737373',
+                        border: '#E5E5E5',
+                        accent: '#252525',
+                        primary: '#000000',
+                        brandPink: '#EC4899',
+                    },
+                    letterSpacing: {
+                        tight: '-0.02em',
+                        tighter: '-0.04em',
+                    },
+                    animation: {
+                        'shimmer': 'shimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #FAFAFA;
+            color: #FF4F84;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .technical-grid {
+            background-size: 40px 40px;
+            background-image:
+                linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+        }
+
+        .premium-card {
+            background: #FFFFFF;
+            border: 1px solid #EAEAEA;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02), 0 8px 16px -4px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .premium-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03), 0 12px 24px -6px rgba(0, 0, 0, 0.06);
+            border-color: #D4D4D4;
+        }
+
+        .view {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .view.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .signal-path {
+            stroke-dasharray: 60 400;
+            stroke-dashoffset: 60;
+            animation: signal-flow 6s linear infinite;
+        }
+
+        @keyframes signal-flow {
+            0% {
+                stroke-dashoffset: 60;
+                opacity: 0;
+            }
+
+            5% {
+                opacity: 1;
+            }
+
+            90% {
+                stroke-dashoffset: -360;
+                opacity: 1;
+            }
+
+            95% {
+                opacity: 0;
+            }
+
+            100% {
+                stroke-dashoffset: -360;
+                opacity: 0;
+            }
+        }
+    </style>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+    <!-- Background Elements -->
+    <div class="fixed inset-0 z-0 technical-grid pointer-events-none"></div>
+    <div id="canvas-container" class="fixed inset-0 z-0 opacity-100"></div>
+
     <!-- NAVIGATION -->
-    <nav id="navbar">
-        <div class="container nav-inner">
-            <div class="logo" onclick="app.showView('landing')">
-                <img src="logo.png" alt="JOBREAKER">
+    <nav
+        class="fixed top-0 w-full z-50 border-b border-black/[0.03] bg-white/70 backdrop-blur-xl transition-all duration-500">
+        <div class="max-w-screen-2xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-12">
+                <div class="flex items-center group cursor-pointer">
+                    <a href="index.html">
+                        <img src="logo.png" alt="JOBREAKER"
+                            class="h-16 w-auto transition-transform group-hover:scale-105">
+                    </a>
+                </div>
+
+                <div class="hidden lg:flex items-center gap-8">
+                    <a href="#lifecycle"
+                        class="text-[13px] font-semibold text-charcoal hover:text-black transition-colors uppercase tracking-widest">Fonctionnement</a>
+                    <a href="#pricing"
+                        class="text-[13px] font-semibold text-charcoal hover:text-black transition-colors uppercase tracking-widest">Tarifs</a>
+                    <a href="dashboard.html"
+                        class="text-[13px] font-semibold text-charcoal hover:text-black transition-colors uppercase tracking-widest">Dashboard</a>
+                </div>
             </div>
-            <div class="nav-links">
-                <button onclick="app.showView('dashboard')">Dashboard</button>
-                <button class="btn-primary" onclick="app.showView('onboarding')">S'inscrire</button>
+
+            <div class="flex items-center gap-4">
+                <a href="login.html"
+                    class="hidden sm:block text-[13px] font-bold text-black px-6 hover:opacity-70 transition-opacity">CONNEXION</a>
+                <a href="onboarding.html"
+                    class="h-11 px-8 bg-black text-white rounded-full text-[13px] font-bold hover:bg-neutral-800 transition-all shadow-[0_10px_20px_-10px_rgba(0,0,0,0.2)] flex items-center">
+                    DÉMARRER
+                </a>
             </div>
         </div>
     </nav>
 
     <!-- VIEW: LANDING -->
+    <!-- VIEW: LANDING -->
     <main id="view-landing" class="view active">
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="drip-bg">
-                <svg class="drip-svg animate-drip" viewBox="0 0 1440 400" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M0 0H1440V280C1440 280 1320 380 1200 380C1080 380 960 220 840 220C720 220 600 340 480 340C360 340 240 180 120 180C60 180 0 240 0 240V0Z"
-                        fill="#F472B6" fill-opacity="0.1" />
-                    <path
-                        d="M0 0H1440V180C1440 180 1350 240 1250 240C1150 240 1050 140 950 140C850 140 750 220 650 220C550 220 450 120 350 120C250 120 150 180 50 180C25 180 0 160 0 160V0Z"
-                        fill="#EC4899" />
-                </svg>
-            </div>
+        <!-- HERO -->
+        <section class="relative pt-40 pb-20 px-6 overflow-hidden">
+            <div class="max-w-screen-2xl mx-auto flex flex-col items-center text-center relative z-10">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 text-black text-[10px] font-bold tracking-[0.2em] mb-8 uppercase">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brandPink animate-pulse"></span>
+                    Système de Mutation IA v2.0
+                </div>
 
-            <div class="container hero-content">
-                <h1>
-                    D'ici 2027, 40% des métiers disparaissent. <br>
-                    <span class="text-pink">Jobreaker</span> vous aide à rester dans le jeu.
+                <h1
+                    class="max-w-5xl font-display text-7xl md:text-9xl font-black tracking-tighter text-black mb-8 leading-[0.9]">
+                    Mutation des <span class="text-white drop-shadow-[0_0_1px_rgba(0,0,0,1)]">Métiers.</span><br>
+                    <span
+                        class="italic font-serif font-light text-8xl md:text-[140px] lowercase tracking-normal">Traçabilité</span>
+                    Absolue.
                 </h1>
-                <p class="text-gray subtitle">
-                    Jobreaker vous maintient dans la course avant qu'il ne soit trop tard.<br>
-                    Évoluez avec l'IA, ne la subissez pas.
+
+                <p class="max-w-2xl text-charcoal text-lg md:text-xl mb-12 font-medium leading-relaxed">
+                    Jobreaker cartographie l'évolution du marché du travail en temps réel.
+                    <span class="text-black font-bold">Ne craignez pas le changement, auditez-le.</span>
                 </p>
-                <div class="hero-actions">
-                    <button class="btn-hero" onclick="app.showView('onboarding')">
-                        Lancer l'automatisation
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="3">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </button>
-                    <p style="margin-top: 1rem; font-size: 0.9rem; color: #6B7280;">
-                        Déjà un compte ? <a href="#" onclick="app.showView('login')"
-                            style="color: #EC4899; text-decoration: none; font-weight: 500;">Se connecter</a>
-                    </p>
-                </div>
-            </div>
-        </section>
 
-        <!-- How It Works Section -->
-        <section class="how-it-works">
-            <div class="container">
-                <div class="section-header">
-                    <h2>L'art de la rupture.</h2>
-                    <div class="separator"></div>
-                </div>
-
-                <div class="steps-grid">
-                    <div class="card step-card">
-                        <div class="step-num">01</div>
-                        <h3>Détection des Mutations</h3>
-                        <p class="text-gray">Analyse continue des métiers émergents et des compétences en évolution pour
-                            ne jamais être obsolète.</p>
-                    </div>
-                    <div class="card step-card highlight">
-                        <div class="step-num">02</div>
-                        <h3>Profil Augmenté</h3>
-                        <p class="text-gray">Optimisez votre empreinte (Humain + IA) pour vous repositionner sur les
-                            opportunités de demain.</p>
-                    </div>
-                    <div class="card step-card">
-                        <div class="step-num">03</div>
-                        <h3>Signaux & Opportunités</h3>
-                        <p class="text-gray">Recevez chaque matin les meilleures offres et une compétence clé à
-                            surveiller ou renforcer.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- VIEW: LOGIN -->
-    <main id="view-login" class="view">
-        <div class="wizard-container">
-            <div class="wizard-header">
-                <div class="logo"><img src="logo.png" alt="JOBREAKER"></div>
-                <button class="btn-close" onclick="app.showView('landing')">Quitter</button>
-            </div>
-
-            <div class="wizard-content container">
-                <div class="card wizard-card" style="max-width: 500px; margin: 0 auto;">
-                    <h2 style="text-align: center; margin-bottom: 2rem;">Heureux de vous revoir.</h2>
-
-                    <div class="form-group">
-                        <label>VOTRE EMAIL</label>
-                        <input type="email" id="login-email" placeholder="alex@jobreaker.io">
-                    </div>
-
-                    <button class="btn-next" onclick="app.login()" style="width: 100%; margin-top: 1rem;">Se
-                        connecter</button>
-
-                    <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: #6B7280;">
-                        Pas encore de compte ? <a href="#" onclick="app.showView('onboarding')"
-                            style="color: #EC4899; text-decoration: none;">S'inscrire</a>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- VIEW: ONBOARDING -->
-    <main id="view-onboarding" class="view">
-        <div class="wizard-container">
-            <div class="wizard-header">
-                <div class="logo"><img src="logo.png" alt="JOBREAKER"></div>
-                <button class="btn-close" onclick="app.showView('landing')">Quitter</button>
-            </div>
-
-            <div class="wizard-content container">
-                <div class="wizard-progress">
-                    <div class="progress-dot active" id="dot-1"></div>
-                    <div class="progress-dot" id="dot-2"></div>
-                    <div class="progress-dot" id="dot-3"></div>
-                </div>
-
-                <div class="card wizard-card">
-                    <div class="drip-corner">
-                        <svg viewBox="0 0 100 100">
-                            <path d="M100 0 L100 100 Q 80 80 0 100 L 0 0 Z" fill="#EC4899" fill-opacity="0.1" />
-                        </svg>
-                    </div>
-
-                    <div id="step-1" class="wizard-step active">
-                        <h2>Qui es-tu ?</h2>
-                        <p class="text-gray">Commençons par les bases de ton identité.</p>
-                        <div class="form-group">
-                            <label>PRÉNOM & NOM</label>
-                            <input type="text" id="input-name" placeholder="Alex Rivera">
+                <div class="flex flex-col sm:flex-row items-center gap-6 mb-32">
+                    <a href="onboarding.html"
+                        class="h-16 px-10 bg-black text-white rounded-xl text-sm font-bold hover:scale-105 transition-all shadow-2xl flex items-center gap-3">
+                        LANCER L'AUDIT
+                        <iconify-icon icon="solar:round-alt-arrow-right-bold" class="text-xl"></iconify-icon>
+                    </a>
+                    <div class="flex -space-x-4">
+                        <div class="w-12 h-12 rounded-full border-2 border-canvas bg-neutral-200 overflow-hidden">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
                         </div>
-                        <div class="form-group">
-                            <label>EMAIL</label>
-                            <input type="email" id="input-email" placeholder="alex@jobreaker.io">
+                        <div class="w-12 h-12 rounded-full border-2 border-canvas bg-neutral-300 overflow-hidden">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Anita" alt="User">
                         </div>
-                        <button class="btn-next" onclick="app.nextStep()">Continuer</button>
-                    </div>
-
-                    <div id="step-2" class="wizard-step">
-                        <h2>Ton Expertise.</h2>
-                        <p class="text-gray">Ce que tu fais de mieux.</p>
-                        <div class="form-group">
-                            <label>INTITULÉ DE POSTE VISÉ</label>
-                            <input type="text" id="input-job" placeholder="Product Designer Senior">
+                        <div class="w-12 h-12 rounded-full border-2 border-canvas bg-neutral-400 overflow-hidden">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Max" alt="User">
                         </div>
-                        <div class="form-group">
-                            <label>LOCALISATION</label>
-                            <select id="input-location" class="form-select">
-                                <option value="" disabled selected>Choisir une localisation</option>
-                                <option value="Remote">Remote (Télétravail)</option>
-                                <!-- JS will populate countries -->
-                            </select>
-                        </div>
-                        <button class="btn-next" onclick="app.nextStep()">Valider mon profil</button>
-                    </div>
-
-                    <div id="step-3" class="wizard-step success">
-                        <div class="success-icon">✓</div>
-                        <h2>C'est lancé !</h2>
-                        <p class="text-gray">Ton profil est sous surveillance. Rendez-vous demain matin à 07:00.</p>
-                        <button class="btn-next" onclick="app.showView('dashboard')">Accéder au Dashboard</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- VIEW: DASHBOARD -->
-    <main id="view-dashboard" class="view">
-        <div class="dashboard-layout">
-            <aside class="sidebar">
-                <div class="logo">JOBREAKER<span>.</span></div>
-                <nav class="side-nav">
-                    <a href="#" onclick="app.showView('dashboard')" class="active">Feed Matinal</a>
-                    <a href="#" onclick="app.showView('profile')">Mon Profil</a>
-                    <a href="#" onclick="app.showView('settings')">Paramètres</a>
-                    <a href="documentation.html" target="_blank">Documentation ↗</a>
-                </nav>
-                <div class="sidebar-footer">
-                    <button onclick="app.logout()">Déconnexion</button>
-                </div>
-            </aside>
-
-            <div class="dash-main">
-                <header class="dash-header">
-                    <div class="welcome">
-                        <h2>Hello, Alex Rivera.</h2>
-                        <p class="text-gray">Votre assistant Jobreaker tourne en silence.</p>
-                    </div>
-                    <div class="status-badge">
-                        <span class="pulse"></span>
-                        ANALYSE EN COURS
-                    </div>
-                </header>
-
-                <div class="dash-grid">
-                    <div class="stats-cards">
-                        <div class="card bg-black stat-card">
-                            <label>SIGNAL DU MARCHÉ</label>
-                            <div class="value-title">L'IA Générative</div>
-                            <div class="sub-value text-pink">+12% de demande ce mois</div>
-                        </div>
-                        <div class="card bg-pink stat-card">
-                            <label>SKILL À RENFORCER</label>
-                            <div class="value-title">Prompt Engine</div>
-                            <div class="sub-value">Impact: Transformationnel</div>
-                        </div>
-                    </div>
-
-                    <div class="card profile-summary">
-                        <div class="avatar">AR</div>
-                        <h3>Alex Rivera</h3>
-                        <p class="text-gray">Profil : Humain Augmenté</p>
-                        <div class="skills">
-                            <span>Design</span>
-                            <span>IA Strategy</span>
-                            <span>Soft Skills</span>
-                        </div>
-                    </div>
-
-                    <div class="feed-section">
-                        <div class="feed-header">
-                            <h3>Dernières pépites.</h3>
-                            <button class="text-pink">Voir tout le feed</button>
-                        </div>
-                        <div class="feed-list">
-                            <div class="card feed-item">
-                                <div class="item-info">
-                                    <div class="item-icon">L</div>
-                                    <div>
-                                        <h4>Lead UI/UX Designer</h4>
-                                        <p class="text-gray">Lydia • Paris • 65k - 75k€</p>
-                                    </div>
-                                </div>
-                                <div class="item-meta">
-                                    <span class="match-tag">94% Match</span>
-                                    <span class="time">04:12</span>
-                                </div>
-                            </div>
-                            <div class="card feed-item">
-                                <div class="item-info">
-                                    <div class="item-icon gray">A</div>
-                                    <div>
-                                        <h4>Product Designer</h4>
-                                        <p class="text-gray">Alan • Remote • 70k - 85k€</p>
-                                    </div>
-                                </div>
-                                <div class="item-meta">
-                                    <span class="match-tag gray">88% Match</span>
-                                    <span class="time">03:55</span>
-                                </div>
-                            </div>
+                        <div class="px-6 flex items-center">
+                            <span class="text-xs font-bold text-black">+2.4k auditeurs actifs</span>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </main>
 
-    <!-- VIEW: JOB DETAILS -->
-    <main id="view-job-details" class="view">
-        <div class="wizard-container" style="background: #FFF;">
-            <div class="wizard-header"
-                style="position: sticky; top:0; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); z-index: 10; border-bottom: 1px solid #f3f4f6;">
-                <button class="btn-close" onclick="app.showView('dashboard')"
-                    style="display: flex; align-items: center; gap: 0.5rem; color: #000;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M19 12H5M12 19l-7-7 7-7" />
-                    </svg>
-                    Retour
-                </button>
-                <div class="logo"><img src="logo.png" alt="JOBREAKER"></div>
-            </div>
-
-            <div class="container" style="max-width: 800px; padding: 2rem; padding-bottom: 8rem;">
-                <div id="job-details-content">
-                    <!-- Dynamic Content -->
-                </div>
-            </div>
-
-            <div
-                style="position: fixed; bottom: 0; left: 0; width: 100%; padding: 1.5rem; background: #FFF; border-top: 1px solid #f3f4f6; display: flex; justify-content: center; z-index: 20;">
-                <a id="job-apply-btn" href="#" target="_blank" class="btn-primary"
-                    style="text-decoration: none; padding: 1rem 3rem; font-size: 1.1rem; box-shadow: 0 10px 30px rgba(236, 72, 153, 0.3);">
-                    Postuler / Voir l'offre originale
-                </a>
-            </div>
-        </div>
-    </main>
-
-    <!-- VIEW: PROFILE -->
-    <main id="view-profile" class="view">
-        <div class="dashboard-layout">
-            <aside class="sidebar">
-                <div class="logo"><img src="logo.png" alt="JOBREAKER"></div>
-                <nav class="side-nav">
-                    <a href="#" onclick="app.showView('dashboard')">Feed Matinal</a>
-                    <a href="#" onclick="app.showView('profile')" class="active">Mon Profil</a>
-                    <a href="#" onclick="app.showView('settings')">Paramètres</a>
-                    <a href="documentation.html" target="_blank">Documentation ↗</a>
-                </nav>
-                <div class="sidebar-footer">
-                    <button onclick="app.logout()">Déconnexion</button>
-                </div>
-            </aside>
-
-            <div class="dash-main">
-                <header class="dash-header">
-                    <div class="welcome">
-                        <h2>Mon Profil.</h2>
-                        <p class="text-gray">Gérez vos informations et votre positionnement.</p>
-                    </div>
-                </header>
-
-                <div class="card wizard-card" style="max-width: 800px;">
-                    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem;">
-                        <input type="file" id="avatar-upload" accept="image/*" style="display: none;"
-                            onchange="app.uploadAvatar()">
-                        <div class="avatar-upload-container" onclick="document.getElementById('avatar-upload').click()"
-                            style="position: relative; cursor: pointer; transition: transform 0.2s;">
-                            <div id="profile-avatar-preview" class="avatar"
-                                style="width: 120px; height: 120px; font-size: 3rem; margin-bottom: 0.5rem; overflow: hidden;">
-                                AR
+                <!-- HERO VISUAL: NODES -->
+                <div
+                    class="w-full max-w-6xl mx-auto h-[400px] relative rounded-3xl border border-black/[0.05] bg-white shadow-sm overflow-hidden flex items-center justify-center group">
+                    <div class="absolute inset-0 technical-grid opacity-50"></div>
+                    <div class="relative z-10 flex flex-col items-center">
+                        <div class="flex items-center gap-24 mb-12">
+                            <div
+                                class="node-logic w-20 h-20 rounded-2xl bg-black flex items-center justify-center text-white shadow-2xl transition-transform group-hover:scale-110">
+                                <iconify-icon icon="solar:database-bold" class="text-3xl"></iconify-icon>
                             </div>
                             <div
-                                style="position: absolute; bottom: 5px; right: 0; background: #EC4899; color: #FFF; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #FFF;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path
-                                        d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                                    <circle cx="12" cy="13" r="4" />
-                                </svg>
+                                class="node-logic w-20 h-20 rounded-2xl bg-white border border-black/10 flex items-center justify-center text-black shadow-sm transition-transform group-hover:scale-110">
+                                <iconify-icon icon="solar:cpu-bold" class="text-3xl"></iconify-icon>
+                            </div>
+                            <div
+                                class="node-logic w-20 h-20 rounded-2xl bg-black flex items-center justify-center text-white shadow-2xl transition-transform group-hover:scale-110">
+                                <iconify-icon icon="solar:user-bold" class="text-3xl"></iconify-icon>
                             </div>
                         </div>
-                        <p class="text-gray" style="font-size: 0.8rem; margin-top: 0.5rem;">Cliquer pour modifier</p>
+                        <div class="font-mono text-[10px] tracking-[0.3em] font-bold text-black/20 uppercase">Network
+                            Consensus Established</div>
                     </div>
-
-                    <div class="form-group">
-                        <label>PRÉNOM & NOM</label>
-                        <input type="text" id="profile-name">
-                    </div>
-                    <div class="form-group">
-                        <label>EMAIL (Non modifiable)</label>
-                        <input type="email" id="profile-email" disabled style="opacity: 0.5; cursor: not-allowed;">
-                    </div>
-                    <div class="form-group">
-                        <label>INTITULÉ DE POSTE VISÉ</label>
-                        <input type="text" id="profile-job">
-                    </div>
-                    <div class="form-group">
-                        <label>LOCALISATION</label>
-                        <select id="profile-location" class="form-select">
-                            <option value="" disabled selected>Choisir une localisation</option>
-                            <option value="Remote">Remote (Télétravail)</option>
-                            <!-- JS will populate countries -->
-                        </select>
-                    </div>
-                    <button class="btn-next" onclick="app.updateProfile()"
-                        style="width: auto; padding: 1rem 3rem;">Sauvegarder les modifications</button>
+                    <!-- SVGs for connecting lines -->
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-20">
+                        <path d="M 400 200 Q 600 100 800 200" fill="none" stroke="black" stroke-width="2"
+                            class="signal-path"></path>
+                        <path d="M 400 200 Q 600 300 800 200" fill="none" stroke="black" stroke-width="2"
+                            class="signal-path" style="animation-delay: -3s;"></path>
+                    </svg>
                 </div>
             </div>
-        </div>
-    </main>
+        </section>
 
-    <!-- VIEW: SETTINGS -->
-    <main id="view-settings" class="view">
-        <div class="dashboard-layout">
-            <aside class="sidebar">
-                <div class="logo"><img src="logo.png" alt="JOBREAKER"></div>
-                <nav class="side-nav">
-                    <a href="#" onclick="app.showView('dashboard')">Feed Matinal</a>
-                    <a href="#" onclick="app.showView('profile')">Mon Profil</a>
-                    <a href="#" onclick="app.showView('settings')" class="active">Paramètres</a>
-                </nav>
-                <div class="sidebar-footer">
-                    <button onclick="app.logout()">Déconnexion</button>
-                </div>
-            </aside>
-
-            <div class="dash-main">
-                <header class="dash-header">
-                    <div class="welcome">
-                        <h2>Paramètres.</h2>
-                        <p class="text-gray">Gérez votre compte et vos préférences.</p>
+        <!-- MUTATION LIFECYCLE (Scroll Section) -->
+        <section id="lifecycle" class="py-40 bg-black relative overflow-hidden">
+            <div class="max-w-screen-2xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center">
+                <div class="sticky top-40 h-[500px] flex items-center justify-center">
+                    <div class="relative w-80 h-80">
+                        <div
+                            class="absolute inset-0 rounded-full border border-white/10 animate-[spin_10s_linear_infinite]">
+                        </div>
+                        <div
+                            class="absolute inset-4 rounded-full border border-white/5 animate-[spin_15s_linear_infinite_reverse]">
+                        </div>
+                        <div class="avatar-center absolute inset-0 flex items-center justify-center">
+                            <div
+                                class="w-32 h-32 rounded-3xl bg-brandPink shadow-[0_0_50px_rgba(236,72,153,0.3)] flex items-center justify-center transition-all duration-500">
+                                <iconify-icon icon="solar:bolt-circle-bold" class="text-white text-5xl"></iconify-icon>
+                            </div>
+                        </div>
                     </div>
-                </header>
+                </div>
 
-                <div class="settings-content" style="max-width: 800px;">
-                    <div class="card wizard-card" style="border: 1px solid #EF4444;">
-                        <h3 style="color: #EF4444; margin-bottom: 1rem;">Zone Dangereuse</h3>
-                        <p class="text-gray" style="margin-bottom: 2rem;">
-                            La suppression de votre compte est définitive. Toutes vos données (profil, préférences,
-                            historique) seront effacées de nos serveurs.
-                        </p>
-                        <button class="btn-danger" onclick="app.deleteAccount()">Supprimer mon compte</button>
+                <div class="space-y-32 py-20">
+                    <div class="lifecycle-step opacity-30 transition-opacity duration-500" data-step="1">
+                        <div class="text-brandPink font-mono text-sm font-bold mb-4">01 — DÉTECTION</div>
+                        <h3 class="text-white text-4xl font-black tracking-tight mb-6">Scanning Global des Signaux</h3>
+                        <p class="text-white/50 text-xl font-medium">Nos algorithmes patrouillent les places de marché
+                            et réseaux pro pour identifier les mutations de compétences avant qu'elles ne deviennent la
+                            norme.</p>
+                    </div>
+                    <div class="lifecycle-step opacity-30 transition-opacity duration-500" data-step="2">
+                        <div class="text-brandPink font-mono text-sm font-bold mb-4">02 — ANALYSE</div>
+                        <h3 class="text-white text-4xl font-black tracking-tight mb-6">Évaluation du Poids de l'IA</h3>
+                        <p class="text-white/50 text-xl font-medium">Nous quantifions l'impact des nouveaux modèles d'IA
+                            sur chaque intitulé de poste pour vous donner un score de risque et d'opportunité.</p>
+                    </div>
+                    <div class="lifecycle-step opacity-30 transition-opacity duration-500" data-step="3">
+                        <div class="text-brandPink font-mono text-sm font-bold mb-4">03 — MATCHING</div>
+                        <h3 class="text-white text-4xl font-black tracking-tight mb-6">Consensus Offre / Profil</h3>
+                        <p class="text-white/50 text-xl font-medium">Seules les opportunités en phase avec votre
+                            trajectoire d'évolution sont présentées. Une curation sans bruit.</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- PRICING -->
+        <section id="pricing" class="py-40 bg-white relative overflow-hidden">
+            <div class="max-w-screen-2xl mx-auto px-6 relative z-10">
+                <div class="mb-24 text-center">
+                    <h2 class="text-6xl font-black tracking-tighter mb-6">Investissez dans votre <span
+                            class="italic font-serif font-light text-7xl lowercase">trajectoire</span>.</h2>
+                    <p class="text-charcoal text-xl font-medium max-w-2xl mx-auto">Choisissez le niveau d'audit adapté à
+                        votre ambition.</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Basic -->
+                    <div
+                        class="pricing-transition group p-10 rounded-[40px] border border-black/[0.05] bg-canvas flex flex-col hover:shadow-2xl hover:scale-[1.02] cursor-pointer">
+                        <div class="mb-10">
+                            <div class="text-[10px] font-bold tracking-[0.2em] uppercase text-black/40 mb-4">ACCÈS LIBRE
+                            </div>
+                            <div class="text-5xl font-black mb-2">0€<span class="text-lg text-black/20">/mois</span>
+                            </div>
+                            <p class="text-charcoal font-medium">Pour surveiller le marché.</p>
+                        </div>
+                        <ul class="space-y-4 mb-10 flex-grow">
+                            <li class="flex items-center gap-3 text-sm font-bold text-black">
+                                <iconify-icon icon="solar:check-circle-bold" class="text-black text-xl"></iconify-icon>
+                                5 audits / jour
+                            </li>
+                            <li class="flex items-center gap-3 text-sm font-bold text-black">
+                                <iconify-icon icon="solar:check-circle-bold" class="text-black text-xl"></iconify-icon>
+                                Feed temps réel
+                            </li>
+                        </ul>
+                        <a href="onboarding.html"
+                            class="w-full h-14 rounded-2xl border-2 border-black text-black font-black hover:bg-black hover:text-white transition-all flex items-center justify-center">S'INSCRIRE</a>
+                    </div>
+
+                    <!-- PRO -->
+                    <div
+                        class="pricing-transition group p-10 rounded-[40px] bg-black text-white flex flex-col shadow-2xl scale-105 z-20 cursor-pointer">
+                        <div class="mb-10">
+                            <div
+                                class="inline-block px-3 py-1 rounded-full bg-brandPink text-[10px] font-bold tracking-[0.2em] uppercase mb-4">
+                                RECOMMANDÉ</div>
+                            <div class="text-5xl font-black mb-2">12€<span class="text-lg text-white/20">/mois</span>
+                            </div>
+                            <p class="text-white/60 font-medium">L'audit complet, sans limite.</p>
+                        </div>
+                        <ul class="space-y-4 mb-10 flex-grow">
+                            <li class="flex items-center gap-3 text-sm font-bold">
+                                <iconify-icon icon="solar:check-circle-bold"
+                                    class="text-brandPink text-xl"></iconify-icon>
+                                Audits illimités
+                            </li>
+                            <li class="flex items-center gap-3 text-sm font-bold">
+                                <iconify-icon icon="solar:check-circle-bold"
+                                    class="text-brandPink text-xl"></iconify-icon>
+                                Analyse Skill-Gap IA
+                            </li>
+                            <li class="flex items-center gap-3 text-sm font-bold">
+                                <iconify-icon icon="solar:check-circle-bold"
+                                    class="text-brandPink text-xl"></iconify-icon>
+                                Alertes Mutation SMS
+                            </li>
+                        </ul>
+                        <a href="onboarding.html"
+                            class="w-full h-14 rounded-2xl bg-brandPink text-white font-black hover:scale-105 transition-all flex items-center justify-center">CHOISIR
+                            PRO</a>
+                    </div>
+
+                    <!-- Enterprise -->
+                    <div
+                        class="pricing-transition group p-10 rounded-[40px] border border-black/[0.05] bg-canvas flex flex-col hover:shadow-2xl hover:scale-[1.02] cursor-pointer">
+                        <div class="mb-10">
+                            <div class="text-[10px] font-bold tracking-[0.2em] uppercase text-black/40 mb-4">EQUIPE
+                            </div>
+                            <div class="text-5xl font-black mb-2">Sur Devis</div>
+                            <p class="text-charcoal font-medium">Recrutement & Stratégie.</p>
+                        </div>
+                        <ul class="space-y-4 mb-10 flex-grow">
+                            <li class="flex items-center gap-3 text-sm font-bold text-black">
+                                <iconify-icon icon="solar:check-circle-bold" class="text-black text-xl"></iconify-icon>
+                                API Access
+                            </li>
+                            <li class="flex items-center gap-3 text-sm font-bold text-black">
+                                <iconify-icon icon="solar:check-circle-bold" class="text-black text-xl"></iconify-icon>
+                                Support Dédié
+                            </li>
+                        </ul>
+                        <button
+                            class="w-full h-14 rounded-2xl border-2 border-black text-black font-black hover:bg-black hover:text-white transition-all">CONTACTER</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="py-20 px-6 border-t border-black/[0.03]">
+            <div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
+                <div class="max-w-sm">
+                    <div class="mb-6">
+                        <img src="logo.png" alt="JOBREAKER" class="h-16 w-auto">
+                    </div>
+                    <p class="text-charcoal font-medium">La traçabilité absolue des opportunités dans l'ère de la
+                        mutation IA.</p>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-20">
+                    <div>
+                        <div class="text-[10px] font-bold tracking-[0.2em] uppercase mb-6">Produit</div>
+                        <ul class="space-y-4 text-sm font-bold text-charcoal">
+                            <li><a href="#" class="hover:text-black">Audit</a></li>
+                            <li><a href="#" class="hover:text-black">Mutation Index</a></li>
+                            <li><a href="#" class="hover:text-black">Pricing</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="text-[10px] font-bold tracking-[0.2em] uppercase mb-6">Société</div>
+                        <ul class="space-y-4 text-sm font-bold text-charcoal">
+                            <li><a href="#" class="hover:text-black">Archive</a></li>
+                            <li><a href="#" class="hover:text-black">Consensus</a></li>
+                            <li><a href="#" class="hover:text-black">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="max-w-screen-2xl mx-auto mt-20 pt-10 border-t border-black/[0.03] flex justify-between items-center text-[10px] font-bold tracking-widest text-black/20 uppercase">
+                <span>© 2026 JOBREAKER INC.</span>
+                <span>SECURED BY NETWORK CONSENSUS</span>
+            </div>
+        </footer>
     </main>
 
     <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+    </script>
 </body>
 
 </html>

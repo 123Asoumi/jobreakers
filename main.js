@@ -24,7 +24,7 @@ const app = {
         full_name: '',
         email: '',
         target_job: '',
-        location: ''
+        location: 'Remote'
     },
     currentJobsCache: [], // Store fetched jobs
 
@@ -33,8 +33,32 @@ const app = {
         this.initSupabase();
         this.populateLocations();
         this.setupEventListeners();
+
+        // Listen for auth changes
+        this.supabase?.auth.onAuthStateChange((event, session) => {
+            console.log('Auth event:', event);
+            if (session) {
+                this.userData.id = session.user.id;
+                this.userData.email = session.user.email;
+                this.loadUserDataFromDB();
+            } else {
+                this.showView('landing');
+            }
+        });
+
         this.checkSession();
         this.subscribeToJobs(); // Listen for new jobs
+    },
+
+    async checkSession() {
+        if (!this.supabase) return;
+        const { data: { session } } = await this.supabase.auth.getSession();
+        if (session) {
+            this.userData.id = session.user.id;
+            this.userData.email = session.user.email;
+            await this.loadUserDataFromDB();
+            this.showView('dashboard');
+        }
     },
 
     populateLocations(targetId = 'input-location') {
@@ -74,8 +98,23 @@ const app = {
             return group;
         };
 
+        select.innerHTML = '<option value="" disabled selected>Choisir une localisation</option>';
         select.appendChild(createGroup('Europe', europe));
         select.appendChild(createGroup('Afrique', africa));
+    },
+
+    async loadUserDataFromDB() {
+        if (!this.supabase || !this.userData.id) return;
+        const { data, error } = await this.supabase
+            .from('users')
+            .select('*')
+            .eq('id', this.userData.id)
+            .single();
+
+        if (data) {
+            this.userData = { ...this.userData, ...data };
+            this.updateDashboardUI();
+        }
     },
 
     initSupabase() {
@@ -105,52 +144,42 @@ const app = {
     },
 
     handleNewJob(job) {
-        // Only react if we are on the dashboard
         const feedContainer = document.querySelector('.feed-list');
         if (!feedContainer) return;
 
-        // Store in cache if needed (though cache is usually for full list)
         this.currentJobsCache.unshift(job);
 
-        // Create HTML
         const jobHTML = `
-            <div class="card feed-item new-item" style="animation: slideDown 0.5s ease-out; border-left: 3px solid #EC4899;">
-                <div class="item-info">
-                    <div class="item-icon">${job.company[0]}</div>
+            <div class="p-10 hover:bg-canvas transition-all cursor-pointer group flex items-center justify-between animate-slide-in" onclick="app.openJobDetails('${job.id}')">
+                <div class="flex items-center gap-8">
+                    <div class="w-16 h-16 rounded-2xl bg-black flex items-center justify-center text-2xl font-black text-white transition-transform group-hover:scale-105 shadow-xl">
+                        ${job.company[0]}
+                    </div>
                     <div>
-                        <h4>${job.title} <span style="font-size:0.7em; color:#EC4899; vertical-align:middle; margin-left:5px;">● NOUVEAU</span></h4>
-                        <p class="text-gray">${job.company} • ${job.location} • ${job.salary_range}</p>
+                        <h4 class="text-2xl font-black text-black mb-2 group-hover:text-brandPink transition-colors flex items-center gap-3">
+                            ${job.title}
+                            <span class="px-3 py-1 rounded-full bg-black text-white text-[10px] font-bold uppercase tracking-widest">Nouveau</span>
+                        </h4>
+                        <p class="text-charcoal font-medium">${job.company} • ${job.location} • <span class="text-black font-bold">${job.salary_range}</span></p>
                     </div>
                 </div>
-                <div class="item-meta">
-                    <div class="tags-row" style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
-                         ${job.tags ? job.tags.map(t => `<span style="font-size:0.7rem; background:#f3f4f6; padding:0.1rem 0.4rem; border-radius:4px;">${t}</span>`).join('') : ''}
+                <div class="text-right">
+                    <div class="px-4 py-2 rounded-full ${job.match_score > 90 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' : 'bg-yellow-500/10 border-yellow-500/20 text-yellow-500'} border text-[10px] font-bold uppercase tracking-widest mb-3">
+                        ${job.match_score}% Match
                     </div>
-                    <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
-                        <span class="match-tag" style="background:${job.match_score > 90 ? '#DEF7EC' : '#FDF6B2'}; color:${job.match_score > 90 ? '#03543F' : '#723B13'}">${job.match_score}% Match</span>
-                        <div style="display:flex; gap: 10px; align-items: center;">
-                            ${job.url ? `<a href="${job.url}" target="_blank" style="font-size:0.8rem; color:#EC4899; text-decoration:none;">Source ↗</a>` : ''}
-                            <button onclick="app.openJobDetails('${job.id}')" style="background:none; border:none; text-decoration:underline; cursor:pointer; font-size:0.8rem; color:#6B7280;">Détails</button>
-                        </div>
-                    </div>
+                    <div class="text-black/20 text-xs font-mono font-bold tracking-widest">MAINTENANT</div>
                 </div>
             </div>
         `;
 
-        // Prepend logic
-        if (feedContainer.innerHTML.includes('Aucune offre')) {
+        if (feedContainer.innerHTML.includes('Aucune offre') || feedContainer.innerHTML.includes('Recherche')) {
             feedContainer.innerHTML = '';
         }
 
         feedContainer.insertAdjacentHTML('afterbegin', jobHTML);
     },
 
-    checkSession() {
-        const saved = localStorage.getItem('jobreaker_user');
-        if (saved) {
-            this.userData = JSON.parse(saved);
-        }
-    },
+
 
     setupEventListeners() {
         document.querySelectorAll('.chip').forEach(chip => {
@@ -169,46 +198,35 @@ const app = {
         }
 
         window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
+            const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
-                nav.style.padding = '1rem 0';
-                nav.style.boxShadow = '0 10px 30px rgba(0,0,0,0.05)';
+                nav.classList.add('bg-white/90', 'h-16');
+                nav.classList.remove('bg-white/70', 'h-20');
             } else {
-                nav.style.padding = '1.5rem 0';
-                nav.style.boxShadow = 'none';
+                nav.classList.add('bg-white/70', 'h-20');
+                nav.classList.remove('bg-white/90', 'h-16');
             }
+            this.handleLifecycleScroll();
         });
+
+        this.initThreeBackground();
     },
 
     showView(viewId) {
-        // Prevent flickering if already on the same view (unless forced)
-        if (this.currentView === viewId) {
-            const target = document.getElementById('view-' + viewId);
-            if (target && target.classList.contains('active')) {
-                // Ensure sidebar is visible e.g. on mobile resize
-                const nav = document.getElementById('navbar');
-                if (viewId === 'dashboard' || viewId === 'profile' || viewId === 'settings' || viewId === 'job-details') {
-                    if (nav) nav.style.display = 'none';
-                }
-                return;
-            }
-        }
+        if (this.currentView === viewId) return;
 
         document.querySelectorAll('.view').forEach(view => {
             view.classList.remove('active');
-            // Remove the delay for hiding, just hide it after transition or immediately
-            // But we keep the timeout to allow fade out
             setTimeout(() => {
                 if (this.currentView !== view.id.replace('view-', '')) {
                     view.style.display = 'none';
                 }
-            }, 600);
+            }, 500);
         });
 
         const target = document.getElementById('view-' + viewId);
         if (target) {
             target.style.display = 'block';
-            // slight delay to allow display:block to apply before adding class for opacity transition
             setTimeout(() => {
                 target.classList.add('active');
             }, 50);
@@ -231,14 +249,13 @@ const app = {
             this.loadProfileData();
         }
 
-        const nav = document.getElementById('navbar');
+        const nav = document.querySelector('nav');
         if (viewId === 'dashboard' || viewId === 'onboarding' || viewId === 'profile' || viewId === 'settings' || viewId === 'job-details') {
-            nav.style.display = 'none';
+            if (nav) nav.style.display = 'none';
         } else {
-            nav.style.display = 'block';
-            setTimeout(() => {
-                nav.style.transform = 'translateY(0)';
-            }, 10);
+            if (nav) {
+                nav.style.display = 'block';
+            }
         }
     },
 
@@ -388,30 +405,28 @@ const app = {
             this.userData.full_name = name;
             this.userData.email = email;
 
-            this.currentStep++;
-            this.updateWizard();
-        } else if (this.currentStep === 2) {
-            const job = document.getElementById('input-job').value;
-            const location = document.getElementById('input-location').value;
+            // Trigger Magic Link Signup
+            try {
+                const { error } = await this.supabase.auth.signInWithOtp({
+                    email: this.userData.email,
+                    options: {
+                        data: { full_name: this.userData.full_name }
+                    }
+                });
+                if (error) throw error;
 
-            if (!job) {
-                alert('Veuillez préciser le poste visé.');
-                return;
-            }
-
-            if (!location) {
-                alert('Veuillez choisir une localisation.');
-                return;
-            }
-
-            this.userData.target_job = job;
-            this.userData.location = location;
-
-            const success = await this.saveUserToSupabase();
-            if (success) {
+                alert('Un lien de validation a été envoyé à ' + this.userData.email + '. Cliquez dessus pour continuer votre inscription.');
                 this.currentStep++;
                 this.updateWizard();
+            } catch (err) {
+                console.error('Auth error:', err);
+                alert('Erreur: ' + err.message);
             }
+        } else if (this.currentStep === 2) {
+            // Step 2 is now "Profile Completion" after email verification
+            // But for onboarding flow simplicity, we can just proceed to dashboard
+            this.currentStep++;
+            this.updateWizard();
         }
     },
 
@@ -425,9 +440,25 @@ const app = {
         }
 
         try {
+            // Clean userData before sending to database
+            const cleanUserData = { ...this.userData };
+
+            // Remove id if it's empty or not a valid UUID
+            if (!cleanUserData.id || cleanUserData.id === '') {
+                delete cleanUserData.id;
+            }
+
+            // Only keep fields that exist in the users table schema
+            const allowedFields = ['id', 'full_name', 'email', 'target_job', 'location', 'skills', 'avatar_url', 'status'];
+            Object.keys(cleanUserData).forEach(key => {
+                if (!allowedFields.includes(key)) {
+                    delete cleanUserData[key];
+                }
+            });
+
             const { data, error } = await this.supabase
                 .from('users')
-                .upsert([this.userData], { onConflict: 'email' });
+                .upsert([cleanUserData], { onConflict: 'email' });
 
             if (error) throw error;
 
@@ -453,33 +484,41 @@ const app = {
             }
         });
 
-        document.querySelectorAll('.progress-dot').forEach((dot, index) => {
-            if (index + 1 === this.currentStep) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
+        for (let i = 1; i <= 3; i++) {
+            const dot = document.getElementById('dot-' + i);
+            if (dot) {
+                if (i <= this.currentStep) {
+                    dot.classList.add('bg-black');
+                    dot.classList.remove('bg-black/5');
+                } else {
+                    dot.classList.remove('bg-black');
+                    dot.classList.add('bg-black/5');
+                }
             }
-        });
+        }
     },
 
     updateDashboardUI() {
-        const welcomeTitle = document.querySelector('.welcome h2');
-        const profileName = document.querySelector('.profile-summary h3');
-        const profileAvatar = document.querySelector('.avatar');
-        const profileSub = document.querySelector('.profile-summary p');
+        const welcomeTitle = document.getElementById('dash-welcome');
+        const profileName = document.getElementById('profile-summary-name');
+        const profileAvatarPreviews = [
+            document.getElementById('profile-avatar-preview'),
+            document.getElementById('profile-avatar-preview-2')
+        ];
 
         if (welcomeTitle) welcomeTitle.innerText = `Hello, ${this.userData.full_name || 'Ami'}.`;
         if (profileName) profileName.innerText = this.userData.full_name || 'Alex Rivera';
-        if (profileSub) profileSub.innerText = `Profil : ${this.userData.target_job || 'Humain Augmenté'}`;
 
-        if (profileAvatar && this.userData.full_name) {
-            if (this.userData.avatar_url) {
-                profileAvatar.innerHTML = `<img src="${this.userData.avatar_url}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
-            } else {
-                const initials = this.userData.full_name.split(' ').map(n => n[0]).join('').toUpperCase();
-                profileAvatar.innerText = initials.substring(0, 2);
+        profileAvatarPreviews.forEach(preview => {
+            if (preview && this.userData.full_name) {
+                if (this.userData.avatar_url) {
+                    preview.innerHTML = `<img src="${this.userData.avatar_url}" class="w-full h-full object-cover">`;
+                } else {
+                    const initials = this.userData.full_name.split(' ').map(n => n[0]).join('').toUpperCase();
+                    preview.innerText = initials.substring(0, 2);
+                }
             }
-        }
+        });
 
         this.updateInsights();
     },
@@ -534,7 +573,6 @@ const app = {
     async login() {
         const emailInput = document.getElementById('login-email');
         if (!emailInput) return;
-
         const email = emailInput.value.trim();
 
         if (!email) {
@@ -543,56 +581,25 @@ const app = {
         }
 
         try {
-            if (!this.supabase) {
-                console.warn('Supabase not connected, mocking login');
-                const saved = localStorage.getItem('jobreaker_user');
-                if (saved) {
-                    const localUser = JSON.parse(saved);
-                    if (localUser.email === email) {
-                        this.userData = localUser;
-                        this.showView('dashboard');
-                        return;
-                    }
-                }
-                alert('Mode démo : Utilisateur non trouvé ou Supabase déconnecté.');
-                return;
-            }
-
-            const { data, error } = await this.supabase
-                .from('users')
-                .select('*')
-                .eq('email', email)
-                .single();
-
-            if (error || !data) {
-                alert('Aucun compte trouvé avec cet email.');
-                console.error(error);
-                return;
-            }
-
-            this.userData = data;
-            localStorage.setItem('jobreaker_user', JSON.stringify(this.userData));
-
-            console.log('Login successful:', this.userData);
-            this.showView('dashboard');
-
+            const { error } = await this.supabase.auth.signInWithOtp({ email });
+            if (error) throw error;
+            alert('Lien de connexion envoyé ! Vérifiez votre boîte mail.');
         } catch (err) {
             console.error('Login error:', err);
-            alert('Une erreur est survenue lors de la connexion.');
+            alert('Erreur : ' + err.message);
         }
     },
 
-    logout() {
-        localStorage.removeItem('jobreaker_user');
+    async logout() {
+        if (this.supabase) await this.supabase.auth.signOut();
         this.userData = {
+            id: '',
             full_name: '',
             email: '',
             target_job: '',
             location: 'Remote'
         };
-        const loginInput = document.getElementById('login-email');
-        if (loginInput) loginInput.value = '';
-
+        localStorage.removeItem('jobreaker_user');
         this.showView('landing');
     },
 
@@ -626,81 +633,42 @@ const app = {
         const feedContainer = document.querySelector('.feed-list');
         if (!feedContainer) return;
 
-        feedContainer.innerHTML = '<div style="padding:2rem; text-align:center; color:#666;">Recherche d\'opportunités...</div>';
+        feedContainer.innerHTML = '<div class="p-12 text-center text-subtle font-medium">Recherche d\'opportunités stratèges...</div>';
 
         let jobs = [];
-        let isFallback = false;
-
         if (this.supabase) {
-            // 1. Try Filtered Query
-            let query = this.supabase
-                .from('job_listings')
-                .select('*')
-                .order('match_score', { ascending: false })
-                .limit(10);
-
-            if (this.userData.target_job) {
-                query = query.ilike('title', `%${this.userData.target_job}%`);
-            }
-
-            if (this.userData.location && this.userData.location !== 'Remote') {
-                query = query.ilike('location', `%${this.userData.location}%`);
-            }
-
+            let query = this.supabase.from('job_listings').select('*').order('match_score', { ascending: false }).limit(10);
+            if (this.userData.target_job) query = query.ilike('title', `%${this.userData.target_job}%`);
             const { data, error } = await query;
-
-            if (!error && data && data.length > 0) {
-                jobs = data;
-            } else {
-                // 2. Fallback
-                isFallback = true;
-                const { data: allData, error: allError } = await this.supabase
-                    .from('job_listings')
-                    .select('*')
-                    .order('match_score', { ascending: false })
-                    .limit(10);
-
-                if (!allError && allData) jobs = allData;
-            }
+            if (!error && data && data.length > 0) jobs = data;
         }
 
         if (jobs.length === 0) {
-            feedContainer.innerHTML = '<div style="padding:2rem; text-align:center; color:#666;">Aucune offre disponible pour le moment.</div>';
+            feedContainer.innerHTML = '<div class="p-12 text-center text-subtle font-medium">Aucune rupture détectée pour le moment. Allez prendre un café.</div>';
             return;
         }
 
-        // store in cache
         this.currentJobsCache = jobs;
 
-        let html = '';
-        if (isFallback) {
-            html += `<div style="padding: 1rem; margin-bottom: 1rem; background: #FFF1F2; color: #9B1C1C; border-radius: 0.5rem; border: 1px solid #FDE8E8; font-size: 0.9rem;">
-                <strong>Aucun match exact pour votre profil.</strong> Voici les opportunités les plus pertinentes du moment.
-            </div>`;
-        }
-
-        html += jobs.map(job => `
-            <div class="card feed-item" onclick="app.openJobDetails('${job.id}')" style="cursor: pointer; transition: transform 0.2s;">
-                <div class="item-info">
-                    <div class="item-icon">${job.company[0]}</div>
+        feedContainer.innerHTML = jobs.map(job => `
+            <div class="p-10 hover:bg-canvas transition-all cursor-pointer group flex items-center justify-between" onclick="app.openJobDetails('${job.id}')">
+                <div class="flex items-center gap-8">
+                    <div class="w-16 h-16 rounded-2xl bg-black flex items-center justify-center text-2xl font-black text-white transition-transform group-hover:scale-105 shadow-xl">
+                        ${job.company[0]}
+                    </div>
                     <div>
-                        <h4>${job.title}</h4>
-                        <p class="text-gray">${job.company} • ${job.location} • ${job.salary_range}</p>
+                        <h4 class="text-2xl font-black text-black mb-2 group-hover:text-brandPink transition-colors tracking-tight">${job.title}</h4>
+                        <p class="text-charcoal font-medium">${job.company} • ${job.location} • <span class="text-black font-bold">${job.salary_range}</span></p>
                     </div>
                 </div>
-                <div class="item-meta">
-                    <div class="tags-row" style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
-                        ${job.tags ? job.tags.map(t => `<span style="font-size:0.7rem; background:#f3f4f6; padding:0.1rem 0.4rem; border-radius:4px;">${t}</span>`).join('') : ''}
+                <div class="text-right">
+                    <div class="px-4 py-2 rounded-full ${job.match_score > 90 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' : 'bg-yellow-500/10 border-yellow-500/20 text-yellow-500'} border text-[10px] font-bold uppercase tracking-widest mb-3">
+                        ${job.match_score}% Match
                     </div>
-                    <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
-                        <span class="match-tag" style="background:${job.match_score > 90 ? '#DEF7EC' : '#FDF6B2'}; color:${job.match_score > 90 ? '#03543F' : '#723B13'}">${job.match_score}% Match</span>
-                         <button style="margin-left:auto; background:none; border:none; text-decoration:underline; cursor:pointer; font-size:0.8rem; color:#6B7280; z-index: 2; position: relative;" onclick="event.stopPropagation(); app.openJobDetails('${job.id}')">Détails</button>
-                    </div>
+                    <div class="text-black/20 text-xs font-mono font-bold tracking-widest">HIER, 22:04</div>
                 </div>
             </div>
         `).join('');
-
-        feedContainer.innerHTML = html;
     },
 
     openJobDetails(jobId) {
@@ -712,30 +680,105 @@ const app = {
 
         if (container) {
             container.innerHTML = `
-                <div style="display:flex; align-items:center; gap:1.5rem; margin-bottom:2rem;">
-                    <div style="width:80px; height:80px; background:#000; color:#FFF; border-radius:1rem; display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:900;">${job.company[0]}</div>
+                <div class="flex items-center gap-10 mb-16">
+                    <div class="w-24 h-24 rounded-[2rem] bg-black flex items-center justify-center text-4xl font-black text-white shadow-2xl">
+                        ${job.company[0]}
+                    </div>
                     <div>
-                        <h1 style="font-size: 2rem; line-height:1.2; margin-bottom:0.5rem;">${job.title}</h1>
-                        <p class="text-gray" style="font-size: 1.1rem;">${job.company} • ${job.location}</p>
+                        <h1 class="font-display text-5xl font-black text-black mb-3 tracking-tighter">${job.title}</h1>
+                        <p class="text-charcoal text-2xl font-medium">${job.company} • ${job.location}</p>
                     </div>
                 </div>
 
-                <div style="margin-bottom: 2rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
-                    <span style="background:#f3f4f6; padding:0.5rem 1rem; border-radius:99px; font-weight:600;">${job.salary_range}</span>
-                    <span style="background:${job.match_score > 90 ? '#DEF7EC' : '#FDF6B2'}; color:${job.match_score > 90 ? '#03543F' : '#723B13'}; padding:0.5rem 1rem; border-radius:99px; font-weight:600;">${job.match_score}% Match</span>
+                <div class="flex gap-4 mb-16">
+                     <div class="px-6 py-3 rounded-2xl bg-canvas border border-black/5 text-black font-black text-sm uppercase tracking-widest">
+                        ${job.salary_range}
+                    </div>
+                    <div class="px-6 py-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 font-black text-sm uppercase tracking-widest">
+                        ${job.match_score}% Match Stratégique
+                    </div>
                 </div>
 
-                <div class="job-description-body" style="line-height: 1.8; color: #374151; font-size: 1.05rem;">
-                    ${job.description || '<p style="color:#666; font-style:italic; padding: 2rem; background: #f9fafb; border-radius: 1rem; text-align: center;">Pas de description détaillée disponible.<br>Veuillez vérifier sur le site source pour plus d\'informations.</p>'}
+                <div class="prose max-w-none text-charcoal leading-loose text-xl font-medium">
+                    ${job.description || '<p class="italic opacity-50">Aucune description détaillée n\'a pu être extraite. Nous vous conseillons de consulter l\'offre via le bouton ci-dessous pour plus de granularité.</p>'}
                 </div>
             `;
         }
 
-        if (applyBtn) {
-            applyBtn.href = job.url || '#';
-        }
-
+        if (applyBtn) applyBtn.href = job.url || '#';
         this.showView('job-details');
+    },
+
+    handleLifecycleScroll() {
+        const lifecycle = document.getElementById('lifecycle');
+        if (!lifecycle || this.currentView !== 'landing') return;
+
+        const rect = lifecycle.getBoundingClientRect();
+        const steps = document.querySelectorAll('.lifecycle-step');
+        const pinkBox = document.querySelector('.avatar-center > div');
+
+        steps.forEach((step, i) => {
+            const stepRect = step.getBoundingClientRect();
+            const center = window.innerHeight / 2;
+
+            if (stepRect.top < center + 100 && stepRect.bottom > center - 100) {
+                step.style.opacity = '1';
+                step.style.transform = 'translateX(20px)';
+
+                // Update central visual based on step
+                if (pinkBox) {
+                    if (i === 0) pinkBox.style.transform = 'scale(1) rotate(0deg)';
+                    if (i === 1) pinkBox.style.transform = 'scale(1.2) rotate(45deg)';
+                    if (i === 2) pinkBox.style.transform = 'scale(0.9) rotate(-15deg)';
+                }
+            } else {
+                step.style.opacity = '0.3';
+                step.style.transform = 'translateX(0)';
+            }
+        });
+    },
+
+    initThreeBackground() {
+        const container = document.getElementById('canvas-container');
+        if (!container) return;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // Create a subtle floating network of points
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        for (let i = 0; i < 5000; i++) {
+            vertices.push(
+                THREE.MathUtils.randFloatSpread(2000),
+                THREE.MathUtils.randFloatSpread(2000),
+                THREE.MathUtils.randFloatSpread(2000)
+            );
+        }
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        const material = new THREE.PointsMaterial({ color: 0x000000, size: 2, transparent: true, opacity: 0.05 });
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        camera.position.z = 1000;
+
+        const animate = () => {
+            requestAnimationFrame(animate);
+            points.rotation.x += 0.0001;
+            points.rotation.y += 0.0001;
+            renderer.render(scene, camera);
+        };
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
     }
 };
 

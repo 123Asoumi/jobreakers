@@ -1,0 +1,560 @@
+<main id="view-login" class="view">
+    <div class="min-h-screen flex items-center justify-center px-6 relative bg-canvas">
+        <div class="absolute inset-0 technical-grid opacity-20 pointer-events-none"></div>
+
+        <div class="w-full max-w-md relative z-10">
+            <div class="text-center mb-12">
+                <div class="w-20 h-20 rounded-[2rem] bg-black flex items-center justify-center mx-auto mb-8 shadow-2xl">
+                    <iconify-icon icon="solar:lock-password-bold" class="text-4xl text-white"></iconify-icon>
+                </div>
+                <h2 class="font-display text-4xl font-black text-black mb-4">Heureux de vous revoir.</h2>
+                <p class="text-charcoal font-medium">Accédez à votre intelligence de marché personnalisée.</p>
+            </div>
+
+            <div class="bg-white border border-black/[0.05] rounded-[3rem] p-12 shadow-2xl">
+                <div class="space-y-8">
+                    <div>
+                        <label class="block text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4">VOTRE
+                            EMAIL</label>
+                        <input type="email" id="login-email" placeholder="alex@jobreaker.io"
+                            class="w-full bg-canvas border border-black/[0.05] rounded-2xl px-6 py-5 text-black focus:outline-none focus:border-black/20 transition-all font-semibold text-lg placeholder:text-black/10">
+                    </div>
+
+                    <button onclick="app.login()"
+                        class="w-full h-16 rounded-2xl bg-black text-white font-black hover:scale-[1.02] transition-all flex items-center justify-center gap-3 shadow-xl">
+                        <span>S'IDENTIFIER</span>
+                        <iconify-icon icon="solar:login-2-bold" class="text-xl"></iconify-icon>
+                    </button>
+                </div>
+
+                <div class="mt-12 pt-10 border-t border-black/[0.03] text-center">
+                    <p class="text-charcoal font-medium">
+                        Nouveau sur Jobreaker ?
+                        <button onclick="app.showView('onboarding')"
+                            class="text-black font-black hover:opacity-70 ml-2">S'inscrire</button>
+                    </p>
+                </div>
+            </div>
+
+            <button onclick="app.showView('landing')"
+                class="mt-12 text-black/30 hover:text-black transition-colors text-[10px] font-bold tracking-[0.2em] flex items-center gap-3 mx-auto uppercase">
+                <iconify-icon icon="solar:arrow-left-linear" class="text-lg"></iconify-icon>
+                Retour à l'accueil
+            </button>
+        </div>
+    </div>
+</main>
+
+<!-- VIEW: ONBOARDING -->
+<main id="view-onboarding" class="view">
+    <div class="min-h-screen flex items-center justify-center px-6 relative bg-canvas">
+        <div class="absolute inset-0 technical-grid opacity-20 pointer-events-none"></div>
+
+        <div class="w-full max-w-2xl relative z-10">
+            <div class="flex items-center justify-between mb-12">
+                <div class="flex items-center gap-2">
+                    <img src="logo.png" alt="JOBREAKER" class="h-16 w-auto">
+                    <span
+                        class="font-display font-black text-xl tracking-tighter text-black uppercase">INITIALISATION</span>
+                </div>
+                <button onclick="app.showView('landing')"
+                    class="text-[10px] font-bold tracking-widest text-black/30 hover:text-black transition-colors uppercase">ANNULER</button>
+            </div>
+
+            <div class="bg-white border border-black/[0.05] rounded-[3rem] p-16 shadow-2xl relative overflow-hidden">
+                <div class="flex gap-4 mb-16">
+                    <div class="h-1 flex-1 rounded-full bg-black transition-all duration-500" id="dot-1"></div>
+                    <div class="h-1 flex-1 rounded-full bg-black/5 transition-all duration-500" id="dot-2"></div>
+                    <div class="h-1 flex-1 rounded-full bg-black/5 transition-all duration-500" id="dot-3"></div>
+                </div>
+
+                <div id="step-1" class="wizard-step active">
+                    <h2 class="font-display text-5xl font-black text-black mb-6 tracking-tighter">Qui es-tu ?</h2>
+                    <p class="text-charcoal text-xl font-medium mb-12">Commençons par les bases de votre identité
+                        numérique.</p>
+
+                    <div class="space-y-12">
+                        <div class="group">
+                            <label
+                                class="block text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 group-focus-within:text-black transition-colors">PRÉNOM
+                                & NOM</label>
+                            <input type="text" id="input-name" placeholder="Alex Rivera"
+                                class="w-full bg-transparent border-b border-black/10 py-4 text-3xl text-black focus:outline-none focus:border-black transition-all font-black placeholder:text-black/5">
+                        </div>
+                        <div class="group">
+                            <label
+                                class="block text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 group-focus-within:text-black transition-colors">EMAIL
+                                PROFESSIONNEL</label>
+                            <input type="email" id="input-email" placeholder="alex@jobreaker.io"
+                                class="w-full bg-transparent border-b border-black/10 py-4 text-3xl text-black focus:outline-none focus:border-black transition-all font-black placeholder:text-black/5">
+                        </div>
+                    </div>
+
+                    <button onclick="app.nextStep()"
+                        class="w-full h-20 rounded-2xl bg-black text-white font-black text-xl hover:scale-[1.01] transition-all mt-16 flex items-center justify-center gap-4 shadow-2xl">
+                        CONTINUER
+                        <iconify-icon icon="solar:arrow-right-bold" class="text-2xl"></iconify-icon>
+                    </button>
+                </div>
+
+                <div id="step-2" class="wizard-step">
+                    <div class="text-center py-10">
+                        <div class="relative w-32 h-32 mx-auto mb-12">
+                            <div class="absolute inset-0 bg-black/[0.03] rounded-full animate-ping"></div>
+                            <div
+                                class="relative w-full h-full bg-black flex items-center justify-center rounded-[2.5rem] shadow-2xl">
+                                <iconify-icon icon="solar:letter-bold" class="text-5xl text-white"></iconify-icon>
+                            </div>
+                        </div>
+                        <h2 class="font-display text-5xl font-black text-black mb-6 tracking-tighter">Vérification.
+                        </h2>
+                        <p class="text-charcoal text-xl font-medium mb-12">Veuillez cliquer sur le lien envoyé à
+                            votre adresse email.</p>
+                        <div
+                            class="font-mono text-[10px] tracking-[0.3em] font-bold text-black/20 uppercase animate-pulse mb-12">
+                            Waiting for network consensus...</div>
+                    </div>
+
+                    <button onclick="app.showView('landing')"
+                        class="w-full h-20 rounded-2xl border-2 border-black/5 text-black font-black text-xl hover:bg-black hover:text-white transition-all">
+                        REVENIR À L'ACCUEIL
+                    </button>
+                </div>
+
+                <div id="step-3" class="wizard-step success text-center py-10">
+                    <div
+                        class="w-32 h-32 bg-black flex items-center justify-center rounded-[2.5rem] mx-auto mb-12 shadow-2xl">
+                        <iconify-icon icon="solar:check-circle-bold" class="text-5xl text-white"></iconify-icon>
+                    </div>
+                    <h2 class="font-display text-5xl font-black text-black mb-6 tracking-tighter">C'est lancé !</h2>
+                    <p class="text-charcoal text-xl font-medium mb-16">Votre profil est sous surveillance
+                        algorithmique. Rendez-vous demain matin à 07:00.</p>
+
+                    <button onclick="app.showView('dashboard')"
+                        class="w-full h-20 rounded-2xl bg-brandPink text-white font-black text-xl hover:scale-[1.02] transition-all shadow-[0_20px_40px_-10px_rgba(236,72,153,0.3)]">
+                        ACCÉDER AU DASHBOARD
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- VIEW: DASHBOARD -->
+<main id="view-dashboard" class="view">
+    <div class="flex min-h-screen bg-canvas relative overflow-hidden">
+        <div class="fixed inset-0 technical-grid opacity-10 pointer-events-none"></div>
+
+        <!-- Sidebar -->
+        <aside class="w-80 bg-white border-r border-black/[0.03] flex flex-col relative z-20 shadow-sm">
+            <div class="p-10">
+                <div class="mb-16 group cursor-pointer" onclick="app.showView('landing')">
+                    <img src="logo.png" alt="JOBREAKER" class="h-20 w-auto transition-transform group-hover:scale-105">
+                </div>
+
+                <nav class="space-y-3">
+                    <a href="#" onclick="app.showView('dashboard')"
+                        class="flex items-center gap-4 px-6 py-4 rounded-2xl bg-black text-white font-black transition-all shadow-xl scale-[1.02]">
+                        <iconify-icon icon="solar:feed-bold" class="text-2xl"></iconify-icon>
+                        <span class="text-[13px] tracking-wide">FEED MATINAL</span>
+                    </a>
+                    <a href="#" onclick="app.showView('profile')"
+                        class="flex items-center gap-4 px-6 py-4 rounded-2xl text-charcoal font-bold hover:bg-black/5 hover:text-black transition-all group">
+                        <iconify-icon icon="solar:user-bold"
+                            class="text-2xl opacity-40 group-hover:opacity-100 transition-opacity"></iconify-icon>
+                        <span class="text-[13px] tracking-wide">MON PROFIL</span>
+                    </a>
+                    <a href="#" onclick="app.showView('settings')"
+                        class="flex items-center gap-4 px-6 py-4 rounded-2xl text-charcoal font-bold hover:bg-black/5 hover:text-black transition-all group">
+                        <iconify-icon icon="solar:settings-bold"
+                            class="text-2xl opacity-40 group-hover:opacity-100 transition-opacity"></iconify-icon>
+                        <span class="text-[13px] tracking-wide">PARAMÈTRES</span>
+                    </a>
+                    <a href="documentation.html" target="_blank"
+                        class="flex items-center gap-4 px-6 py-4 rounded-2xl text-charcoal font-bold hover:bg-black/5 hover:text-black transition-all group">
+                        <iconify-icon icon="solar:document-text-bold"
+                            class="text-2xl opacity-40 group-hover:opacity-100 transition-opacity"></iconify-icon>
+                        <span class="text-[13px] tracking-wide">DOCUMENTATION</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="mt-auto p-10 border-t border-black/[0.03]">
+                <button onclick="app.logout()"
+                    class="flex items-center gap-4 text-charcoal font-bold hover:text-red-500 transition-colors group">
+                    <iconify-icon icon="solar:logout-bold"
+                        class="text-2xl opacity-40 group-hover:opacity-100 transition-opacity"></iconify-icon>
+                    <span class="text-[13px] tracking-wide uppercase">Déconnexion</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-16 relative z-10 overflow-y-auto max-h-screen">
+            <header class="flex justify-between items-center mb-16">
+                <div>
+                    <h2 class="font-display text-5xl font-black text-black mb-4 tracking-tighter" id="dash-welcome">
+                        Hello, Alex Rivera.</h2>
+                    <p class="text-charcoal text-xl font-medium">Votre assistant Jobreaker tourne en silence.</p>
+                </div>
+                <div
+                    class="px-6 py-3 rounded-full border border-black/[0.05] bg-white flex items-center gap-4 shadow-sm">
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-20"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-black"></span>
+                    </span>
+                    <span class="text-[10px] font-bold text-black uppercase tracking-[0.2em]">CONSENSUS EN
+                        COURS</span>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-12 gap-12">
+                <!-- Stats Section -->
+                <div class="col-span-12 lg:col-span-8 space-y-12">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="premium-card p-10 group">
+                            <label
+                                class="text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-6 block">SIGNAL
+                                DU MARCHÉ</label>
+                            <div class="text-4xl font-black text-black mb-4 leading-tight tracking-tighter">L'IA
+                                Générative</div>
+                            <div class="text-emerald-500 font-bold flex items-center gap-2 text-sm">
+                                <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                +12% de demande ce mois
+                            </div>
+                        </div>
+                        <div
+                            class="bg-black border border-black/[0.05] rounded-[2.5rem] p-10 group relative overflow-hidden shadow-2xl">
+                            <div class="relative z-10">
+                                <label
+                                    class="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-6 block">SKILL
+                                    À RENFORCER</label>
+                                <div class="text-4xl font-black text-white mb-4 leading-tight tracking-tighter">
+                                    Prompt Engine</div>
+                                <div class="text-brandPink font-bold text-sm">Impact: Transformationnel</div>
+                            </div>
+                            <iconify-icon icon="solar:bolt-bold"
+                                class="absolute -bottom-8 -right-8 text-[180px] text-white/[0.03] rotate-12"></iconify-icon>
+                        </div>
+                    </div>
+
+                    <!-- Feed Section -->
+                    <div class="bg-white border border-black/[0.03] rounded-[3rem] overflow-hidden shadow-sm">
+                        <div
+                            class="p-10 border-b border-black/[0.03] flex justify-between items-center bg-white/50 backdrop-blur-sm sticky top-0 z-10">
+                            <h3 class="font-display text-3xl font-black text-black tracking-tighter">Dernières
+                                pépites.</h3>
+                            <button
+                                class="text-[10px] font-bold tracking-widest text-black/30 hover:text-black transition-colors uppercase">VOIR
+                                TOUT LE FEED</button>
+                        </div>
+                        <div class="feed-list divide-y divide-black/[0.03]">
+                            <!-- Items will be dynamically populated, but here's the design shell -->
+                            <div class="p-10 hover:bg-canvas transition-all cursor-pointer group flex items-center justify-between"
+                                onclick="app.showJob('lydia')">
+                                <div class="flex items-center gap-8">
+                                    <div
+                                        class="w-16 h-16 rounded-2xl bg-black flex items-center justify-center text-2xl font-black text-white transition-transform group-hover:scale-105 shadow-xl">
+                                        L</div>
+                                    <div>
+                                        <h4
+                                            class="text-2xl font-black text-black mb-2 group-hover:text-brandPink transition-colors tracking-tight">
+                                            Lead UI/UX Designer</h4>
+                                        <p class="text-charcoal font-medium">Lydia • Paris • <span
+                                                class="text-black font-bold">65k - 75k€</span></p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div
+                                        class="px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold uppercase tracking-widest mb-3">
+                                        94% Match</div>
+                                    <div class="text-black/20 text-xs font-mono font-bold tracking-widest">04:12
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Sidebar -->
+                <div class="col-span-12 lg:col-span-4 space-y-12">
+                    <div class="premium-card p-12 text-center group">
+                        <div id="profile-avatar-preview"
+                            class="w-32 h-32 rounded-full bg-black/5 border-4 border-white shadow-2xl mx-auto mb-8 flex items-center justify-center text-4xl font-black text-black overflow-hidden relative group-hover:scale-105 transition-transform">
+                            AR
+                        </div>
+                        <h3 class="text-3xl font-black text-black mb-2 tracking-tighter" id="profile-summary-name">
+                            Alex Rivera</h3>
+                        <p class="text-charcoal font-medium mb-10 italic">Profil : Humain Augmenté</p>
+
+                        <div class="flex flex-wrap justify-center gap-3 mb-12">
+                            <span
+                                class="px-4 py-2 rounded-xl bg-canvas border border-black/[0.05] text-[10px] font-bold text-black uppercase tracking-widest">Design</span>
+                            <span
+                                class="px-4 py-2 rounded-xl bg-canvas border border-black/[0.05] text-[10px] font-bold text-black uppercase tracking-widest">IA
+                                Strategy</span>
+                            <span
+                                class="px-4 py-2 rounded-xl bg-canvas border border-black/[0.05] text-[10px] font-bold text-black uppercase tracking-widest">Soft
+                                Skills</span>
+                        </div>
+
+                        <button onclick="app.showView('profile')"
+                            class="w-full py-5 rounded-2xl bg-black text-white font-black text-sm hover:scale-[1.02] transition-all shadow-xl uppercase tracking-widest">
+                            Modifier le Profil
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- VIEW: JOB DETAILS -->
+<main id="view-job-details" class="view">
+    <div class="min-h-screen bg-canvas relative overflow-hidden flex flex-col">
+        <div class="fixed inset-0 technical-grid opacity-20 pointer-events-none"></div>
+
+        <header
+            class="h-24 bg-white/70 backdrop-blur-xl border-b border-black/[0.03] flex items-center px-12 relative z-20 justify-between">
+            <button onclick="app.showView('dashboard')"
+                class="flex items-center gap-3 text-black/30 hover:text-black transition-colors font-bold text-[10px] tracking-widest uppercase">
+                <iconify-icon icon="solar:arrow-left-linear" class="text-xl"></iconify-icon>
+                RETOUR AU DASHBOARD
+            </button>
+            <div class="flex items-center gap-2">
+                <img src="logo.png" alt="JOBREAKER" class="h-16 w-auto">
+                <span class="font-display font-black text-xl tracking-tighter text-black uppercase">ANALYSE
+                    D'OFFRE</span>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-12 relative z-10">
+            <div class="max-w-5xl mx-auto">
+                <div id="job-details-content"
+                    class="bg-white border border-black/[0.05] rounded-[3rem] p-16 shadow-2xl min-h-[600px]">
+                    <!-- Dynamic Content with premium typography -->
+                </div>
+            </div>
+        </div>
+
+        <div class="p-10 border-t border-black/[0.03] bg-white/50 backdrop-blur-xl relative z-20 flex justify-center">
+            <a id="job-apply-btn" href="#" target="_blank"
+                class="h-16 px-12 rounded-2xl bg-black text-white font-black text-lg hover:scale-[1.02] transition-all flex items-center gap-4 shadow-2xl uppercase tracking-widest">
+                Postuler / Voir l'offre originale
+                <iconify-icon icon="solar:arrow-right-up-bold" class="text-xl"></iconify-icon>
+            </a>
+        </div>
+    </div>
+</main>
+
+<!-- VIEW: PROFILE -->
+<main id="view-profile" class="view">
+    <div class="flex min-h-screen bg-canvas relative overflow-hidden">
+        <div class="fixed inset-0 technical-grid opacity-10 pointer-events-none"></div>
+
+        <!-- Sidebar -->
+        <aside class="w-80 bg-white border-r border-black/[0.03] flex flex-col relative z-20 shadow-sm">
+            <div class="p-10">
+                <div class="mb-16 group cursor-pointer" onclick="app.showView('landing')">
+                    <img src="logo.png" alt="JOBREAKER" class="h-20 w-auto transition-transform group-hover:scale-105">
+                </div>
+
+                <nav class="space-y-3">
+                    <a href="#" onclick="app.showView('dashboard')"
+                        class="flex items-center gap-4 px-6 py-4 rounded-2xl text-charcoal font-bold hover:bg-black/5 hover:text-black transition-all group">
+                        <iconify-icon icon="solar:feed-bold"
+                            class="text-2xl opacity-40 group-hover:opacity-100 transition-opacity"></iconify-icon>
+                        <span class="text-[13px] tracking-wide">FEED MATINAL</span>
+                    </a>
+                    <a href="#" onclick="app.showView('profile')"
+                        class="flex items-center gap-4 px-6 py-4 rounded-2xl bg-black text-white font-black transition-all shadow-xl scale-[1.02]">
+                        <iconify-icon icon="solar:user-bold" class="text-2xl"></iconify-icon>
+                        <span class="text-[13px] tracking-wide">MON PROFIL</span>
+                    </a>
+                    <a href="#" onclick="app.showView('settings')"
+                        class="flex items-center gap-4 px-6 py-4 rounded-2xl text-charcoal font-bold hover:bg-black/5 hover:text-black transition-all group">
+                        <iconify-icon icon="solar:settings-bold"
+                            class="text-2xl opacity-40 group-hover:opacity-100 transition-opacity"></iconify-icon>
+                        <span class="text-[13px] tracking-wide">PARAMÈTRES</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="mt-auto p-10 border-t border-black/[0.03]">
+                <button onclick="app.logout()"
+                    class="flex items-center gap-4 text-charcoal font-bold hover:text-red-500 transition-colors group">
+                    <iconify-icon icon="solar:logout-bold"
+                        class="text-2xl opacity-40 group-hover:opacity-100 transition-opacity"></iconify-icon>
+                    <span class="text-[13px] tracking-wide uppercase">Déconnexion</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Profile Content -->
+        <div class="flex-1 p-16 relative z-10 overflow-y-auto max-h-screen">
+            <header class="mb-16">
+                <h2 class="font-display text-5xl font-black text-black mb-4 tracking-tighter">Mon Profil.</h2>
+                <p class="text-charcoal text-xl font-medium">Gérez vos informations et votre positionnement
+                    stratégique.</p>
+            </header>
+
+            <div class="max-w-4xl">
+                <div class="premium-card p-16">
+                    <div class="flex flex-col items-center mb-16">
+                        <input type="file" id="avatar-upload" accept="image/*" class="hidden"
+                            onchange="app.uploadAvatar()">
+                        <div class="relative cursor-pointer group"
+                            onclick="document.getElementById('avatar-upload').click()">
+                            <div id="profile-avatar-preview-2"
+                                class="w-40 h-40 rounded-full bg-black/5 border-4 border-white shadow-2xl flex items-center justify-center text-5xl font-black text-black overflow-hidden group-hover:scale-105 transition-transform">
+                                AR
+                            </div>
+                            <div
+                                class="absolute bottom-1 right-1 w-12 h-12 bg-black rounded-full flex items-center justify-center text-white border-4 border-white shadow-xl group-hover:scale-110 transition-transform">
+                                <iconify-icon icon="solar:camera-bold" class="text-xl"></iconify-icon>
+                            </div>
+                        </div>
+                        <p class="text-black/30 text-[10px] mt-6 uppercase tracking-widest font-black">Cliquer pour
+                            modifier l'avatar</p>
+                    </div>
+
+                    <div class="space-y-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div class="group">
+                                <label
+                                    class="block text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 group-focus-within:text-black transition-colors">PRÉNOM
+                                    & NOM</label>
+                                <input type="text" id="profile-name"
+                                    class="w-full bg-canvas border border-black/5 rounded-2xl px-6 py-5 text-black focus:outline-none focus:border-black/20 transition-all font-semibold text-lg">
+                            </div>
+                            <div class="group">
+                                <label
+                                    class="block text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 group-focus-within:text-black transition-colors">EMAIL
+                                    (LECTURE SEULE)</label>
+                                <input type="email" id="profile-email" disabled
+                                    class="w-full bg-canvas border border-black/5 rounded-2xl px-6 py-5 text-black/30 cursor-not-allowed font-semibold text-lg">
+                            </div>
+                        </div>
+
+                        <div class="group">
+                            <label
+                                class="block text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 group-focus-within:text-black transition-colors">INTITULÉ
+                                DE POSTE VISÉ</label>
+                            <input type="text" id="profile-job"
+                                class="w-full bg-canvas border border-black/5 rounded-2xl px-6 py-5 text-black focus:outline-none focus:border-black/20 transition-all font-semibold text-lg">
+                        </div>
+
+                        <div class="group">
+                            <label
+                                class="block text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 group-focus-within:text-black transition-colors">LOCALISATION</label>
+                            <select id="profile-location"
+                                class="w-full bg-canvas border border-black/5 rounded-2xl px-6 py-5 text-black focus:outline-none focus:border-black/20 transition-all font-semibold text-lg appearance-none cursor-pointer">
+                                <option value="" disabled selected>Choisir une localisation</option>
+                                <option value="Remote">Remote (Télétravail)</option>
+                                <!-- JS will populate countries -->
+                            </select>
+                        </div>
+
+                        <button onclick="app.updateProfile()"
+                            class="w-full h-20 rounded-2xl bg-black text-white font-black text-xl hover:scale-[1.01] transition-all mt-16 flex items-center justify-center gap-4 shadow-2xl">
+                            SAUVEGARDER LES MODIFICATIONS
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- VIEW: SETTINGS -->
+<main id="view-settings" class="view">
+    <div class="flex min-h-screen bg-canvas relative overflow-hidden">
+        <div class="fixed inset-0 technical-grid opacity-10 pointer-events-none"></div>
+
+        <!-- Sidebar -->
+        <aside class="w-80 bg-white border-r border-black/[0.03] flex flex-col relative z-20 shadow-sm">
+            <div class="p-10">
+                <div class="mb-16 group cursor-pointer" onclick="app.showView('landing')">
+                    <img src="logo.png" alt="JOBREAKER" class="h-20 w-auto transition-transform group-hover:scale-105">
+                </div>
+
+                <nav class="space-y-3">
+                    <a href="#" onclick="app.showView('dashboard')"
+                        class="flex items-center gap-4 px-6 py-4 rounded-2xl text-charcoal font-bold hover:bg-black/5 hover:text-black transition-all group">
+                        <iconify-icon icon="solar:feed-bold"
+                            class="text-2xl opacity-40 group-hover:opacity-100 transition-opacity"></iconify-icon>
+                        <span class="text-[13px] tracking-wide">FEED MATINAL</span>
+                    </a>
+                    <a href="#" onclick="app.showView('profile')"
+                        class="flex items-center gap-4 px-6 py-4 rounded-2xl text-charcoal font-bold hover:bg-black/5 hover:text-black transition-all group">
+                        <iconify-icon icon="solar:user-bold"
+                            class="text-2xl opacity-40 group-hover:opacity-100 transition-opacity"></iconify-icon>
+                        <span class="text-[13px] tracking-wide">MON PROFIL</span>
+                    </a>
+                    <a href="#" onclick="app.showView('settings')"
+                        class="flex items-center gap-4 px-6 py-4 rounded-2xl bg-black text-white font-black transition-all shadow-xl scale-[1.02]">
+                        <iconify-icon icon="solar:settings-bold" class="text-2xl"></iconify-icon>
+                        <span class="text-[13px] tracking-wide">PARAMÈTRES</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="mt-auto p-10 border-t border-black/[0.03]">
+                <button onclick="app.logout()"
+                    class="flex items-center gap-4 text-charcoal font-bold hover:text-red-500 transition-colors group">
+                    <iconify-icon icon="solar:logout-bold"
+                        class="text-2xl opacity-40 group-hover:opacity-100 transition-opacity"></iconify-icon>
+                    <span class="text-[13px] tracking-wide uppercase">Déconnexion</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Settings Content -->
+        <div class="flex-1 p-16 relative z-10 overflow-y-auto max-h-screen">
+            <header class="mb-16">
+                <h2 class="font-display text-5xl font-black text-black mb-4 tracking-tighter">Paramètres.</h2>
+                <p class="text-charcoal text-xl font-medium">Gérez votre compte et vos préférences de sécurité.</p>
+            </header>
+
+            <div class="max-w-4xl">
+                <div class="bg-white border-2 border-red-500/10 rounded-[3rem] p-16 shadow-2xl">
+                    <div class="flex items-center gap-4 mb-10 text-red-500">
+                        <iconify-icon icon="solar:danger-bold" class="text-4xl"></iconify-icon>
+                        <h3 class="text-3xl font-black tracking-tight">Zone Dangereuse</h3>
+                    </div>
+                    <p class="text-charcoal text-xl font-medium mb-12 leading-relaxed">
+                        La suppression de votre compte est <span
+                            class="text-black font-black uppercase">définitive</span>.
+                        Toutes vos données seront effacées de nos serveurs.
+                    </p>
+
+                    <button onclick="app.deleteAccount()"
+                        class="h-20 px-10 rounded-2xl bg-red-500 text-white font-black text-xl hover:scale-[1.02] transition-all shadow-[0_20px_40px_-10px_rgba(239,68,68,0.3)]">
+                        SUPPRIMER MON COMPTE DÉFINITIVEMENT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Supabase JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="main.js"></script>
+<!-- Spotlight Interaction Script -->
+<script>
+    document.addEventListener('mousemove', e => {
+        const cards = document.getElementsByClassName('spotlight-card');
+        for (const card of cards) {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        }
+    });
+</script>
+</body>
+
+</html>

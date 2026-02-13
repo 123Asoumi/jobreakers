@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS public.users (
     target_job TEXT,
     location TEXT,
     skills TEXT[], -- Array of skills
+    avatar_url TEXT, -- Profile picture URL
     status TEXT DEFAULT 'active'
 );
 
@@ -30,6 +31,7 @@ CREATE TABLE IF NOT EXISTS public.job_listings (
     salary_range TEXT,
     tags TEXT[],
     url TEXT, -- Link to original job offer
+    description TEXT, -- Job description/details
     match_score INTEGER DEFAULT 0 -- sophisticated algorithm placeholder
 );
 

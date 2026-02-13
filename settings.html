@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script>
+        tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { canvas: '#FAFAFA', charcoal: '#333333' } } } }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .technical-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+        }
+    </style>
+    <title>Paramètres - Jobreaker</title>
+</head>
+
+<body class="bg-canvas">
+    <div class="flex min-h-screen relative overflow-hidden">
+        <div class="fixed inset-0 technical-grid opacity-10 pointer-events-none"></div>
+        <div id="sidebar-container"></div>
+
+        <div class="flex-1 p-16 relative z-10 overflow-y-auto max-h-screen">
+            <header class="mb-16">
+                <h2 class="font-display text-5xl font-black text-black mb-4 tracking-tighter">Paramètres.</h2>
+                <p class="text-charcoal text-xl font-medium">Gérez votre compte et vos préférences de sécurité.</p>
+            </header>
+
+            <div class="max-w-4xl">
+                <div class="bg-white border-2 border-red-500/10 rounded-[3rem] p-16 shadow-2xl">
+                    <div class="flex items-center gap-4 mb-10 text-red-500">
+                        <iconify-icon icon="solar:danger-bold" class="text-4xl"></iconify-icon>
+                        <h3 class="text-3xl font-black tracking-tight">Zone Dangereuse</h3>
+                    </div>
+                    <p class="text-charcoal text-xl font-medium mb-12 leading-relaxed">
+                        La suppression de votre compte est <span
+                            class="text-black font-black uppercase">définitive</span>.
+                        Toutes vos données seront effacées de nos serveurs.
+                    </p>
+
+                    <button onclick="deleteAccount()"
+                        class="h-20 px-10 rounded-2xl bg-red-500 text-white font-black text-xl hover:scale-[1.02] transition-all shadow-[0_20px_40px_-10px_rgba(239,68,68,0.3)]">
+                        SUPPRIMER MON COMPTE DÉFINITIVEMENT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="nav.js"></script>
+    <script src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('sidebar-container').innerHTML = renderSidebar('settings');
+            app.initSupabase();
+        });
+
+        async function deleteAccount() {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
+                return;
+            }
+
+            const email = app.userData.email;
+            if (!email) {
+                alert('Impossible de trouver votre compte.');
+                return;
+            }
+
+            try {
+                if (app.supabase) {
+                    const { error } = await app.supabase.from('users').delete().eq('email', email);
+                    if (error) {
+                        console.error('Delete error:', error);
+                        alert('Note: La suppression complète sur le serveur peut nécessiter des droits supplémentaires.\\nVotre session locale sera détruite.');
+                    }
+                }
+
+                handleLogout();
+                alert('Votre compte a été supprimé.');
+            } catch (err) {
+                console.error(err);
+                alert('Une erreur est survenue.');
+            }
+        }
+    </script>
+</body>
+
+</html>

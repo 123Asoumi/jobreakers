@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@200;300;400;500;600&family=JetBrains+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link id="all-fonts-link-font-geist" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap">
+
+    <!-- Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                        geist: ['"Geist"', 'sans-serif'],
+                    },
+                    colors: {
+                        canvas: '#FAFAFA',
+                        surface: '#FFFFFF',
+                        obsidian: '#FF4F84',
+                        charcoal: '#333333',
+                        subtle: '#737373',
+                        border: '#E5E5E5',
+                        accent: '#252525',
+                        primary: '#000000',
+                        brandPink: '#EC4899',
+                    },
+                    letterSpacing: {
+                        tight: '-0.02em',
+                        tighter: '-0.04em',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #FAFAFA;
+            color: #FF4F84;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .technical-grid {
+            background-size: 40px 40px;
+            background-image:
+                linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+        }
+
+        .wizard-step {
+            display: none;
+        }
+
+        .wizard-step.active {
+            display: block;
+        }
+    </style>
+    <link rel="stylesheet" href="style.css">
+    <title>Inscription - Jobreaker</title>
+</head>
+
+<body>
+    <div class="min-h-screen flex items-center justify-center px-6 py-12 relative bg-canvas">
+        <div class="absolute inset-0 technical-grid opacity-20 pointer-events-none"></div>
+
+        <div class="w-full max-w-2xl relative z-10">
+            <div class="flex items-center justify-between mb-12">
+                <div class="flex items-center gap-2">
+                    <img src="logo.png" alt="JOBREAKER" class="h-16 w-auto">
+                    <span
+                        class="font-display font-black text-xl tracking-tighter text-black uppercase">INITIALISATION</span>
+                </div>
+                <a href="index.html"
+                    class="text-[10px] font-bold tracking-widest text-black/30 hover:text-black transition-colors uppercase">ANNULER</a>
+            </div>
+
+            <div
+                class="bg-white border border-black/[0.05] rounded-[3rem] p-12 md:p-16 shadow-2xl relative overflow-hidden">
+                <div class="flex gap-4 mb-16">
+                    <div class="h-1 flex-1 rounded-full bg-black transition-all duration-500" id="dot-1"></div>
+                    <div class="h-1 flex-1 rounded-full bg-black/5 transition-all duration-500" id="dot-2"></div>
+                    <div class="h-1 flex-1 rounded-full bg-black/5 transition-all duration-500" id="dot-3"></div>
+                </div>
+
+                <div id="step-1" class="wizard-step active">
+                    <h2 class="font-display text-4xl md:text-5xl font-black text-black mb-6 tracking-tighter">Qui es-tu
+                        ?</h2>
+                    <p class="text-charcoal text-lg md:text-xl font-medium mb-12">Commençons par les bases de votre
+                        identité
+                        numérique.</p>
+
+                    <div class="space-y-12">
+                        <div class="group">
+                            <label
+                                class="block text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 group-focus-within:text-black transition-colors">PRÉNOM
+                                & NOM</label>
+                            <input type="text" id="input-name" placeholder="Alex Rivera"
+                                class="w-full bg-transparent border-b border-black/10 py-4 text-2xl md:text-3xl text-black focus:outline-none focus:border-black transition-all font-black placeholder:text-black/5">
+                        </div>
+                        <div class="group">
+                            <label
+                                class="block text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 group-focus-within:text-black transition-colors">EMAIL
+                                PROFESSIONNEL</label>
+                            <input type="email" id="input-email" placeholder="alex@jobreaker.io"
+                                class="w-full bg-transparent border-b border-black/10 py-4 text-2xl md:text-3xl text-black focus:outline-none focus:border-black transition-all font-black placeholder:text-black/5">
+                        </div>
+                    </div>
+
+                    <button onclick="nextStep()"
+                        class="w-full h-20 rounded-2xl bg-black text-white font-black text-lg md:text-xl hover:scale-[1.01] transition-all mt-16 flex items-center justify-center gap-4 shadow-2xl">
+                        CONTINUER
+                        <iconify-icon icon="solar:arrow-right-bold" class="text-2xl"></iconify-icon>
+                    </button>
+                </div>
+
+                <div id="step-2" class="wizard-step">
+                    <div class="text-center py-10">
+                        <div class="relative w-32 h-32 mx-auto mb-12">
+                            <div class="absolute inset-0 bg-black/[0.03] rounded-full animate-ping"></div>
+                            <div
+                                class="relative w-full h-full bg-black flex items-center justify-center rounded-[2.5rem] shadow-2xl">
+                                <iconify-icon icon="solar:letter-bold" class="text-5xl text-white"></iconify-icon>
+                            </div>
+                        </div>
+                        <h2 class="font-display text-4xl md:text-5xl font-black text-black mb-6 tracking-tighter">
+                            Vérification.
+                        </h2>
+                        <p class="text-charcoal text-lg md:text-xl font-medium mb-12">Veuillez cliquer sur le lien
+                            envoyé à
+                            votre adresse email.</p>
+                        <div
+                            class="font-mono text-[10px] tracking-[0.3em] font-bold text-black/20 uppercase animate-pulse mb-12">
+                            Waiting for network consensus...</div>
+                    </div>
+
+                    <a href="index.html"
+                        class="w-full h-20 rounded-2xl border-2 border-black/5 text-black font-black text-lg md:text-xl hover:bg-black hover:text-white transition-all flex items-center justify-center">
+                        REVENIR À L'ACCUEIL
+                    </a>
+                </div>
+
+                <div id="step-3" class="wizard-step success text-center py-10">
+                    <div
+                        class="w-32 h-32 bg-black flex items-center justify-center rounded-[2.5rem] mx-auto mb-12 shadow-2xl">
+                        <iconify-icon icon="solar:check-circle-bold" class="text-5xl text-white"></iconify-icon>
+                    </div>
+                    <h2 class="font-display text-4xl md:text-5xl font-black text-black mb-6 tracking-tighter">C'est
+                        lancé !</h2>
+                    <p class="text-charcoal text-lg md:text-xl font-medium mb-16">Votre profil est sous surveillance
+                        algorithmique. Rendez-vous demain matin à 07:00.</p>
+
+                    <a href="dashboard.html"
+                        class="w-full h-20 rounded-2xl bg-brandPink text-white font-black text-lg md:text-xl hover:scale-[1.02] transition-all shadow-[0_20px_40px_-10px_rgba(236,72,153,0.3)] flex items-center justify-center">
+                        ACCÉDER AU DASHBOARD
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="main.js"></script>
+    <script>
+        let currentStep = 1;
+
+        function updateWizard() {
+            document.querySelectorAll('.wizard-step').forEach((step, index) => {
+                if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+
+            for (let i = 1; i <= 3; i++) {
+                const dot = document.getElementById('dot-' + i);
+                if (dot) {
+                    if (i <= currentStep) {
+                        dot.classList.add('bg-black');
+                        dot.classList.remove('bg-black/5');
+                    } else {
+                        dot.classList.remove('bg-black');
+                        dot.classList.add('bg-black/5');
+                    }
+                }
+            }
+        }
+
+        async function nextStep() {
+            if (currentStep === 1) {
+                const name = document.getElementById('input-name').value;
+                const email = document.getElementById('input-email').value;
+
+                if (!name || !email) {
+                    alert('Veuillez remplir tous les champs.');
+                    return;
+                }
+
+                app.userData.full_name = name;
+                app.userData.email = email;
+
+                // Trigger Magic Link Signup
+                try {
+                    const { error } = await app.supabase.auth.signInWithOtp({
+                        email: app.userData.email,
+                        options: {
+                            data: { full_name: app.userData.full_name }
+                        }
+                    });
+                    if (error) throw error;
+
+                    alert('Un lien de validation a été envoyé à ' + app.userData.email + '. Cliquez dessus pour continuer votre inscription.');
+                    currentStep++;
+                    updateWizard();
+                } catch (err) {
+                    console.error('Auth error:', err);
+                    alert('Erreur: ' + err.message);
+                }
+            } else if (currentStep === 2) {
+                currentStep++;
+                updateWizard();
+            }
+        }
+
+        // Initialize Supabase on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            app.initSupabase();
+            updateWizard();
+
+            // Listen for auth changes
+            app.supabase?.auth.onAuthStateChange((event, session) => {
+                console.log('Auth event:', event);
+                if (session && event === 'SIGNED_IN') {
+                    app.userData.id = session.user.id;
+                    app.userData.email = session.user.email;
+                    currentStep = 3;
+                    updateWizard();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

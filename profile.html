@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: { canvas: '#FAFAFA', surface: '#FFFFFF', charcoal: '#333333', brandPink: '#EC4899' }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .technical-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+        }
+
+        .premium-card {
+            background: #FFFFFF;
+            border: 1px solid #EAEAEA;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s;
+        }
+    </style>
+    <title>Mon Profil - Jobreaker</title>
+</head>
+
+<body class="bg-canvas">
+    <div class="flex min-h-screen relative overflow-hidden">
+        <div class="fixed inset-0 technical-grid opacity-10 pointer-events-none"></div>
+        <div id="sidebar-container"></div>
+
+        <div class="flex-1 p-16 relative z-10 overflow-y-auto max-h-screen">
+            <header class="mb-16">
+                <h2 class="font-display text-5xl font-black text-black mb-4 tracking-tighter">Mon Profil.</h2>
+                <p class="text-charcoal text-xl font-medium">Gérez vos informations et votre positionnement stratégique.
+                </p>
+            </header>
+
+            <div class="max-w-4xl">
+                <div class="premium-card p-16 rounded-[3rem]">
+                    <div class="flex flex-col items-center mb-16">
+                        <input type="file" id="avatar-upload" accept="image/*" class="hidden" onchange="uploadAvatar()">
+                        <div class="relative cursor-pointer group"
+                            onclick="document.getElementById('avatar-upload').click()">
+                            <div id="profile-avatar-preview-2"
+                                class="w-40 h-40 rounded-full bg-black/5 border-4 border-white shadow-2xl flex items-center justify-center text-5xl font-black text-black overflow-hidden group-hover:scale-105 transition-transform">
+                                U</div>
+                            <div
+                                class="absolute bottom-1 right-1 w-12 h-12 bg-black rounded-full flex items-center justify-center text-white border-4 border-white shadow-xl group-hover:scale-110 transition-transform">
+                                <iconify-icon icon="solar:camera-bold" class="text-xl"></iconify-icon>
+                            </div>
+                        </div>
+                        <p class="text-black/30 text-[10px] mt-6 uppercase tracking-widest font-black">Cliquer pour
+                            modifier l'avatar</p>
+                    </div>
+
+                    <div class="space-y-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4">PRÉNOM
+                                    & NOM</label>
+                                <input type="text" id="profile-name"
+                                    class="w-full bg-canvas border border-black/5 rounded-2xl px-6 py-5 text-black focus:outline-none focus:border-black/20 transition-all font-semibold text-lg">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4">EMAIL
+                                    (LECTURE SEULE)</label>
+                                <input type="email" id="profile-email" disabled
+                                    class="w-full bg-canvas border border-black/5 rounded-2xl px-6 py-5 text-black/30 cursor-not-allowed font-semibold text-lg">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4">INTITULÉ
+                                DE POSTE VISÉ</label>
+                            <input type="text" id="profile-job"
+                                class="w-full bg-canvas border border-black/5 rounded-2xl px-6 py-5 text-black focus:outline-none focus:border-black/20 transition-all font-semibold text-lg">
+                        </div>
+
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4">LOCALISATION</label>
+                            <select id="profile-location"
+                                class="w-full bg-canvas border border-black/5 rounded-2xl px-6 py-5 text-black focus:outline-none focus:border-black/20 transition-all font-semibold text-lg appearance-none cursor-pointer">
+                                <option value="" disabled selected>Choisir une localisation</option>
+                                <option value="Remote">Remote (Télétravail)</option>
+                            </select>
+                        </div>
+
+                        <button onclick="updateProfile()"
+                            class="w-full h-20 rounded-2xl bg-black text-white font-black text-xl hover:scale-[1.01] transition-all mt-16 flex items-center justify-center gap-4 shadow-2xl">
+                            SAUVEGARDER LES MODIFICATIONS
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="nav.js"></script>
+    <script src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('sidebar-container').innerHTML = renderSidebar('profile');
+            app.initSupabase();
+            app.populateLocations('profile-location');
+
+            const { data: { session } } = await app.supabase.auth.getSession();
+            if (session) {
+                app.userData.id = session.user.id;
+                app.userData.email = session.user.email;
+                await app.loadUserDataFromDB();
+            } else {
+                const saved = localStorage.getItem('jobreaker_user');
+                if (saved) app.userData = JSON.parse(saved);
+            }
+
+            loadProfileData();
+        });
+
+        function loadProfileData() {
+            if (app.userData) {
+                const nameInput = document.getElementById('profile-name');
+                const emailInput = document.getElementById('profile-email');
+                const jobInput = document.getElementById('profile-job');
+                const locInput = document.getElementById('profile-location');
+                const avatarPreview = document.getElementById('profile-avatar-preview-2');
+
+                if (nameInput) nameInput.value = app.userData.full_name || '';
+                if (emailInput) emailInput.value = app.userData.email || '';
+                if (jobInput) jobInput.value = app.userData.target_job || '';
+
+                if (avatarPreview && app.userData.full_name) {
+                    const initials = app.userData.full_name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                    avatarPreview.innerText = initials;
+                }
+
+                setTimeout(() => {
+                    if (locInput) locInput.value = app.userData.location || '';
+                }, 100);
+            }
+        }
+
+        async function updateProfile() {
+            const name = document.getElementById('profile-name').value;
+            const job = document.getElementById('profile-job').value;
+            const location = document.getElementById('profile-location').value;
+
+            if (!name || !job || !location) {
+                alert('Veuillez remplir tous les champs.');
+                return;
+            }
+
+            app.userData.full_name = name;
+            app.userData.target_job = job;
+            app.userData.location = location;
+
+            const success = await app.saveUserToSupabase();
+            if (success) {
+                alert('Profil mis à jour avec succès !');
+            }
+        }
+
+        async function uploadAvatar() {
+            const fileInput = document.getElementById('avatar-upload');
+            if (!fileInput || !fileInput.files || fileInput.files.length === 0) return;
+
+            const file = fileInput.files[0];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${app.userData.email.replace(/[^a-z0-9]/gi, '_')}_${Date.now()}.${fileExt}`;
+
+            const avatarPreview = document.getElementById('profile-avatar-preview-2');
+            const oldContent = avatarPreview.innerHTML;
+            avatarPreview.innerHTML = '<div class="pulse" style="background:#FFF;"></div>';
+
+            try {
+                if (!app.supabase) throw new Error('Supabase not connected');
+
+                const { error: uploadError } = await app.supabase.storage.from('avatars').upload(fileName, file);
+                if (uploadError) throw uploadError;
+
+                const { data } = app.supabase.storage.from('avatars').getPublicUrl(fileName);
+                app.userData.avatar_url = data.publicUrl;
+
+                await app.saveUserToSupabase();
+                avatarPreview.innerHTML = `<img src="${data.publicUrl}" style="width:100%; height:100%; object-fit:cover;">`;
+                alert('Photo de profil mise à jour !');
+            } catch (error) {
+                console.error('Upload error:', error);
+                alert('Erreur lors de l\'upload : ' + error.message);
+                avatarPreview.innerHTML = oldContent;
+            }
+        }
+    </script>
+</body>
+
+</html>

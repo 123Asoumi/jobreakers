@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@200;300;400;500;600&family=JetBrains+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link id="all-fonts-link-font-geist" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap">
+
+    <!-- Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                        geist: ['"Geist"', 'sans-serif'],
+                    },
+                    colors: {
+                        canvas: '#FAFAFA',
+                        surface: '#FFFFFF',
+                        obsidian: '#FF4F84',
+                        charcoal: '#333333',
+                        subtle: '#737373',
+                        border: '#E5E5E5',
+                        accent: '#252525',
+                        primary: '#000000',
+                        brandPink: '#EC4899',
+                    },
+                    letterSpacing: {
+                        tight: '-0.02em',
+                        tighter: '-0.04em',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #FAFAFA;
+            color: #FF4F84;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .technical-grid {
+            background-size: 40px 40px;
+            background-image:
+                linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+        }
+    </style>
+    <link rel="stylesheet" href="style.css">
+    <title>Connexion - Jobreaker</title>
+</head>
+
+<body>
+    <div class="min-h-screen flex items-center justify-center px-6 relative bg-canvas">
+        <div class="absolute inset-0 technical-grid opacity-20 pointer-events-none"></div>
+
+        <div class="w-full max-w-md relative z-10">
+            <div class="text-center mb-12">
+                <div class="w-20 h-20 rounded-[2rem] bg-black flex items-center justify-center mx-auto mb-8 shadow-2xl">
+                    <iconify-icon icon="solar:lock-password-bold" class="text-4xl text-white"></iconify-icon>
+                </div>
+                <h2 class="font-display text-4xl font-black text-black mb-4">Heureux de vous revoir.</h2>
+                <p class="text-charcoal font-medium">Accédez à votre intelligence de marché personnalisée.</p>
+            </div>
+
+            <div class="bg-white border border-black/[0.05] rounded-[3rem] p-12 shadow-2xl">
+                <div class="space-y-8">
+                    <div>
+                        <label class="block text-[10px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4">VOTRE
+                            EMAIL</label>
+                        <input type="email" id="login-email" placeholder="alex@jobreaker.io"
+                            class="w-full bg-canvas border border-black/[0.05] rounded-2xl px-6 py-5 text-black focus:outline-none focus:border-black/20 transition-all font-semibold text-lg placeholder:text-black/10">
+                    </div>
+
+                    <button onclick="handleLogin()"
+                        class="w-full h-16 rounded-2xl bg-black text-white font-black hover:scale-[1.02] transition-all flex items-center justify-center gap-3 shadow-xl">
+                        <span>S'IDENTIFIER</span>
+                        <iconify-icon icon="solar:login-2-bold" class="text-xl"></iconify-icon>
+                    </button>
+                </div>
+
+                <div class="mt-12 pt-10 border-t border-black/[0.03] text-center">
+                    <p class="text-charcoal font-medium">
+                        Nouveau sur Jobreaker ?
+                        <a href="onboarding.html" class="text-black font-black hover:opacity-70 ml-2">S'inscrire</a>
+                    </p>
+                </div>
+            </div>
+
+            <a href="index.html"
+                class="mt-12 text-black/30 hover:text-black transition-colors text-[10px] font-bold tracking-[0.2em] flex items-center gap-3 mx-auto uppercase justify-center">
+                <iconify-icon icon="solar:arrow-left-linear" class="text-lg"></iconify-icon>
+                Retour à l'accueil
+            </a>
+        </div>
+    </div>
+
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="main.js"></script>
+    <script>
+        async function handleLogin() {
+            const emailInput = document.getElementById('login-email');
+            if (!emailInput) return;
+            const email = emailInput.value.trim();
+
+            if (!email) {
+                alert('Veuillez entrer votre email.');
+                return;
+            }
+
+            try {
+                const { error } = await app.supabase.auth.signInWithOtp({ email });
+                if (error) throw error;
+                alert('Lien de connexion envoyé ! Vérifiez votre boîte mail.');
+            } catch (err) {
+                console.error('Login error:', err);
+                alert('Erreur : ' + err.message);
+            }
+        }
+
+        // Initialize Supabase on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            app.initSupabase();
+        });
+    </script>
+</body>
+
+</html>
